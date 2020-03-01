@@ -1,0 +1,141 @@
+<chapter xmlns="http://docbook.org/ns/docbook"
+xmlns:xlink="http://www.w3.org/1999/xlink"
+xmlns:xi="http://www.w3.org/2001/XInclude" 
+version="5.0" 
+xml:lang="hu">
+
+<info>
+        <title>Hello, Turing!</title>
+        <keywordset>
+            <keyword/>
+        </keywordset>
+    </info>
+
+    <section>
+        <title>2.1 Végtelen ciklusok</title>
+        <para>
+            Egy mag 100%-on:
+
+            Az első végtelen ciklus egy processzor magot használ 100%-ban.
+            Ez úgy lehetséges hogy itt egy while ciklust használunk mi folyamatosan 
+            vizsgálja a megadott feltételt, ehhez 1 cpu magot használ viszont annak a teljes 
+            teljesitményét muszáj kihasználnia hogy folyamatosan figyelje a ciklus feltételét.
+
+            <!--for és while összehasonlitása-->
+        </para>
+        <para>
+            Egy mag 0%-on: 
+
+            A második ciklus egy  cpu magot közel 0%-ban használ. Ehhez használtunk egy for ciklust, 
+            a végtelen for ciklus assemly nyelven ugyanaz mint a végtelen while ciklus, 
+            alapvetőleg mindkettő 1 magot használ 100%-ban.  Ahhoz hogy a cpu mag  0%-ot használjon 
+            használnunk kell a sleep(1) függvényt ami a számolást késlelteti ezért cpu rá van kényszerülve 
+            a késleltetésre, viszont így sem tudjuk elérni hogy pontosan 0%-on menjen, inkább közelit a 0-hoz, 
+            a gyakorlat azt mutatja hogy így kb 1%-on megy.
+            
+        </para>
+        <para>
+            Az összes mag 100%-on: (WIP)
+
+            A harmadik ciklusunk minden cpu magot 100%-osan használ. Ehhez szükségünk van egy for ciklusra és...
+        </para>
+    </section>
+
+    <section>
+        <title>2.2 Lefagyott, nem fagyott... </title>
+         <para>
+            A példában emlitett „Lefagy” függvénynek bármely programról el kell tudnia dönteni hogy tartalmaz-e 
+            végtelen ciklust. Ez nem feltétlen valósulhat meg, pl.: ha tartalmaz végtelen ciklust akkor true értékkel kell 
+            visszatérnie viszont ha nem tartalmaz akkor elindit egy végtelen ciklust. Ekkor ha a T1000 program „nem lefagyó” 
+            akkor mindenképp lefagy mert ha a „Lefagy” függvény nem true értékkel tér vissza elinditja a végtelen ciklust. 
+            Tehát ilyen esetben saját magáról nem tudja eldönteni hogy van-e benne végtelen ciklus avagy sem. 
+        </para>
+         <para>
+            Megjegyzés: Néhány fejlesztői környezet jelzi ha a programunkban van végtelen ciklus de ezek is többnyire csak 
+            a legegyszerübbekre tudnak szürni szintaktika alapján pl.: ha a programunk tartalmaz while(true), 
+            while(1) vagy for(;;) ciklusokat. Amikor először próbáltam az első feladathpz irni ilyen ciklust nekem 
+            a fejlesztői környezetben való futtatáskor néhány másodperc után kiléptette a ciklusból. 
+        </para>
+    </section>
+
+    <section>
+        <title>2.3 Változócsere </title>
+         <para>
+            Logikai utasitások nélkül a változók cseréjének legegyszerübb módja segédváltozóval megcserélni 
+            az értékeket de egyéb megoldások is vannak pl.: az összeadásos vagy kivonásos.
+            Logikai utasitással is meg tudjuk ezt tenni, a legjobb példa erre a bitenkénti kizáró vagy (XOR).
+            Az én programom 3 fajta változócserét tud végrehajtani, minden futtatáskor véletlenszerüen 
+            választott módszerrel de az eredmény nyilván mindig ugyanaz lesz.
+        </para>
+    </section>
+
+    <section>
+        <title>2.4 Labdapattogtatás </title>
+         <para>
+            A labdapattogtatásos feladat lényege hogy a képernyőt úgy tudjuk használni mint egy 
+            koordináta rendszert (mivel az is). A kiválasztott karakterünket, akár az O betüt megadott pályán 
+            tudjuk, elinditani, itt fontos hogy kicsit elcsúsztatva kezdjük el a pattogtatást hogy be tudja járni az 
+            egész képernyőt. Ha pl x = 2, y = 2 értékeken inditjuk el akkor csak a képernyő egy átlóját tudja 
+            bejárni mivel csak azon az utvonalon fog oda-vissza pattogni. A képernyőnket mátrixként is lehet értelmezni, 
+            nekem eszembe is jutott hogy a feladatot egy arduino és egy 8x8-as ledmátrix 
+            segitségével is megoldjam (WIP).
+        </para>
+    </section>
+
+    <section>
+        <title>2.5 Szóhossz és Linus Tovald -féle BogoMIPS  </title>
+         <para>
+            Ennél a feladatnál a BogoMIPS program while ciklusának fejét kell felhasználnunk ami: 
+            while( loops_per_sec <<= 1) formájú. A ciklus fejében találunk egy „bitwise” operátort. 
+            Ez a „<<” operátor alapvetőleg 2-vel szorozza a bal oldalán lévő változót, a jobb oldalán pedig 
+            egy egyes számot látunk, az operátor jobb oldalán azt a számot adhatjuk meg hogy a szorzást 2 hanyadik 
+            hatványával szeretnénk megtenni pl.: 9 << 2 = 36.
+            Ennek az operátornak van egy párja is „>>” itt a 2 hatványokkal való isztás valósul meg az előzőhöz 
+            hasonló módon. Pl: 36 << 2 = 9.
+            Ha tudjuk pl.: a string amiről szeretnénk megtudni hogy hány bit hosszú így viszonylag 
+            könnyen utána tudunk számolni a szóhosszúságát felhasználva. Általában egy karakter 8 bit 
+            de az UTF-8 esetén akár 32 bit is lehet egy karak
+        </para>
+    </section>
+
+    <section>
+        <title>2.6 Hello Google! (WIP) </title>
+         <para>
+            Ebben a feladatban egy 4 honlapból álló PageRank meghatározást kell készitenünk.
+            Egy oldal PageRank értékét az befolyásolja hogy mekkora PageRank értékü oldalak 
+            hivatkoznak rá. Azaz minél jobb oldalak hivatkoznak az én honlapomra, az én honlapom
+            annál jobb PageRank értékkel fog rendelkezni. Egy oldal PageRank értéke a rá mutató oldalak PageRnkank
+            értékének és az adott oldalról kifele vezető linkek hányadosainak összege. Minél több linkből 
+            áll a PageRank hálózatunk annál bonyolultabbá válik. A példánkban 4 oldal PR értékeit kell 
+            kiszámolunk tehát egy 4x4-es mátrixot fogunk hasznélni ehhez.
+
+        </para> 
+    </section>
+
+    <section>
+        <title>2.7 Monty Hall probléma </title>
+         <para>
+            A Monti Hall problémát én megpróbáltam sziulálni. Készitettem menüt, tudunk választani ajtót, 
+            azt pedig hogy melyik ajtó mögött van a nyeremény véletlenszerüen határozza meg a programunk. 
+            Én úgy fogtam hozzá hogy 3 fő eset van amikor a nyeremény az 1-es, a 2.es és a 3-mas ajtó mögött van. 
+            Ezeket az eseteket alesetekre bontottam aszerint hogy a játékos melyik ajtót választja ki így
+             3*3 különböző eset lehetséges. Ha a program meghatározta melyik ajtó a nyertes és a játékos is 
+             választott magának ajtót az egyiket szükségképpen egy olyan ajtót „kinyitunk” amelyben biztosan 
+             nem a nyeremény van. Ekkor a játékosnak felajánlunk egy választási lehetőséget hogy az eredeti döntését 
+             megváltoztatja-e. Ennél a pintnál a játék lehetséges kimenetelei 3*3*2-re nőttek.
+
+        </para>
+    </section>
+
+    <section>
+        <title>2.8 Brun Tétel </title>
+         <para>
+            Ennél a fealadtál az első dolgunk olyan programot irni ami meghatározza mely primek ikerprimek. 
+            Én ehhez egy for ciklust szeretnék használni amelyben ha két szomszédos prim különbsége éppen 
+            kettő ezeket az elemeket kiválasztom és egymással párba rendezem. Ahhoz hogy megtalálhassuk a 
+            Brun konstans közelitő értékét a primek reciprokösszegét kell összeadunik, ehhez -1 hatványra 
+            emelem őket majd a kapott számokat összeaduk.
+        </para>
+    </section>
+
+</chapter>
