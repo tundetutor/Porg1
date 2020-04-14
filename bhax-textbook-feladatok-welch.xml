@@ -1,0 +1,465 @@
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude" version="5.0" xml:lang="hu">
+    <info>
+        <title>Helló, Welch!</title>
+        <keywordset>
+            <keyword/>
+        </keywordset>
+    </info>
+    <section>
+        <title>6.1 Első osztályom</title>
+        <para>
+            Valósítsd meg C++-ban és Java-ban az módosított polártranszformációs algoritmust! A matek háttér 
+            teljesen irreleváns, csak annyiban érdekes, hogy az algoritmus egy számítása során két normálist
+            számol ki, az egyiket elspájzolod és egy további logikai taggal az osztályban jelzed, hogy van vagy
+            nincs eltéve kiszámolt szám.
+        </para>
+        <para>
+            Megoldás videó:
+        </para>
+        <para>
+            A következő java kód Bátfai Norbert Tanár Úr kódja, a polártranszformációs algoritmus segítségével
+            véletlenszám generálást tudunk végrehajtani. Ez is, a fejezetben objektum orientált programokkal 
+            foglalkozunk. A java alapvetőleg objektum orientált nyelv, ahhoz hogy tudjuk a programot futtatni, 
+            ugyanúgy kell elneveznünk a .java fájlt is mint ami a benne létrehozott osztály neve.
+            Nézzük is meg ez a java program hogyan fut.         
+        </para>
+        <programlisting language="java">
+            <![CDATA[ 
+            public class PolarGenerator {
+                boolean nincsTarolt = true;
+                double tarolt;
+                public PolarGenerator() {
+            
+                    nincsTarolt = true;
+            
+                }
+                public double kovetkezo() {
+                    if(nincsTarolt) {
+                        double u1, u2, v1, v2, w;
+                        do {
+                            u1 = Math.random();
+                            u2 = Math.random();
+            
+                            v1 = 2*u1 - 1;
+                            v2 = 2*u2 - 1;
+            
+                            w = v1*v1 + v2*v2;
+            
+                        } while(w > 1);
+            
+                        double r = Math.sqrt((-2*Math.log(w))/w);
+            
+                        tarolt = r*v2;
+                        nincsTarolt = !nincsTarolt;
+            
+                        return r*v1;
+            
+                    } else {
+                        nincsTarolt = !nincsTarolt;
+                        return tarolt;
+                    }
+                }
+            
+                public static void main(String[] args) {
+                    PolarGenerator g = new PolarGenerator();
+                    for(int i=0; i<10; ++i)
+                        System.out.println(g.kovetkezo());
+                }
+            }]]>
+        </programlisting> 
+        <para>
+            Fordítás és futtatás után a következő gyönyörű eredményeket kaptuk:
+        </para>
+        <screen>
+            <![CDATA[ 
+            0.500010678804642
+            0.7466265624656746
+            1.0803216647807399
+            -0.32064099460970763
+            -2.5477451034196923
+            0.6811730798994344
+            -0.44975361547907916
+            -0.9422083605110528
+            0.49015177151970096
+            2.058535110772562
+            ]]>
+        </screen>             
+    </section>        
+
+    <section>
+        <title>6.2 LZW</title>
+        <para>
+            Valósítsd meg C-ben az LZW algoritmus fa-építését!
+        </para>
+        <para>
+            A feladatcsokorban ez volt szerintem a legfontosabb feladat és a többi is főleg erre épített.
+            Ezt a programot, Bátfau Norbert Tanár Úr videói alapján írtam meg. Most ezt a binárs fát 
+            a nulláról keztük el írni, ez a "from scratch" fánk. Viszont felmerül a kérdés, mi is maga 
+            a bináris fa? 
+        </para>
+        <para>
+            A bináris fák adatstruktrák. A félév során az Adatszerkezetek és algoritmusok nevű tantárgy
+            is sokat foglalkozik ezzel a fajta adatstruktúrával. A bináris fákban különböző adattípusokat tudunk tárolni. 
+            Az egyik legegyszerűbb talán amiben csak egész számokat tárolunk, ezen keresztül bemutatom a működését.
+            Ha adott egy egész számokat tartalmazó rendezett tömbünk, annak elemeit bináris fában is tudjuk tárolni.
+            Ezzel lényegesen lerövidíthetjük az adathalmazunkban történő keresés idejét. A bináris fáknak van 1 db gyökere,
+            és 2 db gyermeke a gyökérnek, egy jobb és egy baloldali. Ha az egész számos példánál maradunk, akkor a gyökér 
+            a tömbként ábrázolt adathalmazban a középső indexű elem, a bal oldali gyermeke a gyökérnél kisebb értékek között 
+            a középső elem, a jobboldalinál pedig az annál nagyobbak közti középső elem és így tovább minden gyermekkel és 
+            azok gyermekeivel. Tehát a bináris fánk szintenként duplázódik elemszámot tekintve, ez azt jelenti, hogy egy 
+            levélemet (olyan csomópont amely nem rendelkezik gyermekekkel) könnyedén elérhetővé válik. Ha van plkb 2500 adatunk,
+            látható, hogy egy keresett elem maximum 11 lépésből elérhető, ez adja az algoritmus gyorsaságát.                 
+        </para>
+        <para>
+            A programunkban tárgyalt bináris fa első sorban 0 és 1 értékekkel dolgozik, ezeket úgy rendezzük el a fában, 
+            hogy ha a vizsgált elem 0 akkor balra kerül, ha 1 akkor pedig jobbra. A bemenő adatokat vizsgáljuk és ha nem létezik még
+            olyan csomópont mint a bemenő adat akkor létrehozunk egyet és a mutatót visszaállítjuk a gyökérre, ha már létezik akkor 
+            pedig ráállítjuk a mutatót. Ilyen módon tudjuk magát a fát felépíteni.
+        </para>
+
+        <para>
+            A videóban ami alapján én is írtam a programot, Bátfai Norbert z alábbi bitsorral tesztelte a programját, 
+            így én is úgy döntöttem azzal tesztelem, hogy biztos legyek annak működésében. Szerencsére jól lefutott a program 
+            és ezt a kimenetet kaptam:
+        </para>
+        <screen>
+            <![CDATA[ 
+            ---------0 3 0 
+            ------0 2 0 
+            ---------1 3 0 
+            ---/ 1 0 
+            ---------------0 5 0 
+            ------------0 4 0 
+            ---------0 3 0 
+            ------1 2 0 
+            ---------1 3 0 
+            ------------1 4 0 
+            ]]>
+        </screen>
+    </section>        
+        
+    <section>
+        <title>6.3 Fabejárás</title>
+        <para>
+            Járd be az előző (inorder bejárású) fát pre- és posztorder is!
+        </para>
+        <para>
+            Megoldás videó:
+        </para>
+        <para>
+            Ehhez a feladathoz is a "from sracth" programot használtam. Eza kód alapvetőleg inorder bejárást 
+            használ, azaz először a baloldalt vizsgálja, aztán az adott csomópont gyökerét majd annak a jobb oldali
+            gyermekét, tehát ha inorder kiíratást végzünk magának a fának a gyökere középen fog megjelenni. 
+            Nézzünk is meg egy kódcsipetet és az ilyen módonbejárt fa kimetetét is.             
+        </para>
+        <programlisting language="C++">
+            <![CDATA[ 
+            template <typename ValueType>
+void BinTree<ValueType>::print(Node *node, std::ostream & os)
+{
+    if(node)
+    {
+        ++depth;
+        print(node -> leftChild(), os);
+
+        for(int i = 0; i < depth; ++i)
+        {
+            os << "---";
+        }
+        
+        os << node -> getValue() << ' ' << depth << ' ' << node -> getCount() << ' ' << std::endl;
+
+        print(node -> rightChild(), os);
+        --depth;
+    }
+}
+            }]]>
+        </programlisting> 
+
+        <screen>
+            <![CDATA[ 
+            ---------0 3 0 
+            ------0 2 0 
+            ---------1 3 0 
+            ---/ 1 0 
+            ---------------0 5 0 
+            ------------0 4 0 
+            ---------0 3 0 
+            ------1 2 0 
+            ---------1 3 0 
+            ------------1 4 0 
+            ]]>
+        </screen>
+
+        <para>
+            A következő bejárás a preorder bejárás lesz, ez azt jelenti, hogy  először mindig a gyökeret vizsgáljuk,
+            azt követően a előzör a baloldalt, majd a jobb oldalt. Itt is megmutatom a kódcsipetet és a kimenetet is, 
+            ebben az esetben a teljes fa gyökere lesz az első kiíratott elem.          
+        </para>
+
+        <programlisting language="C++">
+            <![CDATA[ 
+            template <typename ValueType>
+void BinTree<ValueType>::print(Node *node, std::ostream & os)
+{
+    if(node)
+    {
+        ++depth;
+
+        for(int i = 0; i < depth; ++i)
+        {
+            os << "---";
+        }
+        
+        os << node -> getValue() << ' ' << depth << ' ' << node -> getCount() << ' ' << std::endl;
+
+        print(node -> leftChild(), os);
+
+        print(node -> rightChild(), os);
+        --depth;
+    }
+}
+            }]]>
+        </programlisting> 
+
+        <screen>
+            <![CDATA[ 
+            ---/ 1 0 
+            ------0 2 0 
+            ---------0 3 0 
+            ---------1 3 0 
+            ------1 2 0 
+            ---------0 3 0 
+            ------------0 4 0 
+            ---------------0 5 0 
+            ---------1 3 0 
+            ------------1 4 0 
+            ]]>
+        </screen>
+
+        <para>
+            Végül nézzzük meg a postorder bejárást is. Ennél a bejárásnál az előzőhöz képest annyi 
+            különbség van, hogy a yökeret vizsgáljuk utolára, de a balról-jobbra bejárás megmarad.
+             Ekkor az utolsó kiíratott elem lesz magának a fának a gyökere.
+        </para>
+
+        <programlisting language="C++">
+            <![CDATA[ 
+            template <typename ValueType>
+void BinTree<ValueType>::print(Node *node, std::ostream & os)
+{
+    if(node)
+    {
+        ++depth;
+
+        print(node -> leftChild(), os);
+
+        print(node -> rightChild(), os);
+
+        for(int i = 0; i < depth; ++i)
+        {
+            os << "---";
+        }
+        
+        os << node -> getValue() << ' ' << depth << ' ' << node -> getCount() << ' ' << std::endl;
+
+       
+        --depth;
+    }
+}
+            }]]>
+        </programlisting> 
+
+        <screen>
+            <![CDATA[ 
+            ---------0 3 0 
+            ---------1 3 0 
+            ------0 2 0 
+            ---------------0 5 0 
+            ------------0 4 0 
+            ---------0 3 0 
+            ------------1 4 0 
+            ---------1 3 0 
+            ------1 2 0 
+            ---/ 1 0 
+            ]]>
+        </screen>
+
+    </section>        
+                        
+    <section>
+        <title>6.4 Tag a gyökér</title>
+        <para>
+            Az LZW algoritmust ültesd át egy C++ osztályba, legyen egy Tree és egy beágyazott Node
+            osztálya. A gyökér csomópont legyen kompozícióban a fával!
+        </para>
+        <para>
+            Megoldás videó:
+        </para>
+        <para>
+            Ehhez a feladathoz egy másik bináris fa programot használtam, a z3a7.cpp névvel elátottat, ebben a programban 
+            a gyökér alapból tagja a fának, tehát kompozícióban van azzal. Ezt az alábbi apró kódcsipetben megtekinthetjük.
+            És a következő feladatban pedig megmuatom, hogyan lehet ugyanezt a programot úgy módosítani, hogy a gyökérből mutató 
+            váljon.             
+        </para>
+        <programlisting language="C++">
+            <![CDATA[ 
+
+          LZWBinFa ():fa (&gyoker)
+  {
+  }
+   ~LZWBinFa ()
+  {
+    szabadit (gyoker.egyesGyermek ());
+    szabadit (gyoker.nullasGyermek ());
+  }
+        ]]>
+        </programlisting> 
+
+        <para>
+            Egyébként ezt és a következő programot is lefutattam a COVID19 vírus genomjával, mint bemenet és ugyanazt kaptam 
+            eredményül. Ezt csak mint érdekesség gondoltam megjegyzem, persze ennek a kimenetét nem csatolnám mivel annál egy 41 
+            mélységű fáról beszélünk.          
+        </para>
+
+    </section>        
+                
+    <section>
+        <title>6.5 Mutató a gyökér</title>
+        <para>
+            Írd át az előző forrást, hogy a gyökér csomópont ne kompozícióban, csak aggregációban legyen a 
+            fával!
+        </para>
+        <para>
+            Megoldás videó: 
+        </para>
+        <para>
+            Az általunk használt "from scratch" fás programban a gyökér eleve mutató ezért kerestem egy násik forrást 
+            ahol nem az, ez a z3a7.cpp, és úgy gondoltam érdekesebb ha ebben a feladatban ebből a forrásból készítünk olyat
+            ahol a gyökér mutató, mintha megmutatnám azt amelyiket alapból úgy írtuk. 
+        </para>
+
+        <programlisting language="C++">
+            <![CDATA[ 
+                LZWBinFa ()
+    {
+		gyoker = new Csomopont('/');
+		fa = gyoker;
+    }
+    ~LZWBinFa ()
+    {
+        szabadit (gyoker->egyesGyermek ());
+        szabadit (gyoker->nullasGyermek ());
+    }
+        ]]>
+        </programlisting> 
+
+        <para>
+            Itt ebben a kódcsipetben látszik, hogy a gyökérből az előzőhöz képest mutatót készítettünk, a gyökér is már 
+            új csomópont. Persze a kód többi részét is keleltt módosítanunk, de szerintem itt az LZWBinFa osztályban látszik 
+            a legjobba a különbség.
+        </para>
+
+
+    </section>                     
+
+    <section>
+        <title>6.6 Mozgató szemantika</title>
+        <para>
+            Írj az előző programhoz mozgató konstruktort és értékadást, a mozgató konstruktor legyen a mozgató
+            értékadásra alapozva!
+        </para>
+        <para>
+            Megoldás videó: 
+        </para>
+        <para>
+            Ehhez a feladathoz azt a programot fejlesztük tovább amit a 2. feladathoz használtunk. Itt mindenképp
+            szóba kell hoznunk, hogy ha a fát szeretnénk mozgatni, akkor ezt csak úgy tehetjük meg a <code>BinTree</code>
+            ősosztályba beágyazott <code>Node</code> osztállyal együtt rekurzívan hajtjuk végre. Egyébként készíttetünk másoló
+            és másoló értékadó konstruktort is de most azok kódcsipetét nem teszem bele a könyvbe, lehet a későbbiek során  
+            még belekerül, de most a mozgató szemantikán volt a hangsúly. Nézzünk egy kimenetet is, mivel látható a kódcsipetben 
+            hogy a mozgató konstruktorba tesztelés cljából tettünk kiíratást is. 
+        </para>
+
+        <programlisting language="C++">
+            <![CDATA[ 
+
+        BinTree & operator=(const BinTree & old)
+    {
+        std::cout << "BT copy assign ctor, masolo ertekadas" << std::endl;
+
+        BinTree tmp{old};
+        std::swap(*this, tmp);
+        return *this;
+    }
+    BinTree(BinTree && old){
+        std::cout << "BT move ctor, mozgato " << std::endl;
+
+        root = nullptr;
+        *this = std::move(old);
+
+        
+    }
+    BinTree & operator=(BinTree && old){
+        std::cout << "BT move assign ctor, mozgato ertekadas" << std::endl;
+
+        std::swap(old.root, root);
+        std::swap(old.treep, treep);
+
+        return *this;
+    }
+    ]]>
+        </programlisting> 
+
+        <screen>
+            <![CDATA[ 
+            BT ctor
+            ---------2 3 0 
+            ------5 2 0 
+            ---------7 3 0 
+            ---8 1 0 
+            ------9 2 0 
+
+            BT ctor
+            ---------0 3 0 
+            ------0 2 0 
+            ---/ 1 0 
+            BT  copy ctor, masolo konstruktor
+            BT ctor
+            ***
+            BT copy assign ctor, masolo ertekadas
+            BT  copy ctor, masolo konstruktor
+            BT move ctor, mozgato 
+            BT move assign ctor, mozgato ertekadas
+            BT move assign ctor, mozgato ertekadas
+            BT move assign ctor, mozgato ertekadas
+            BT dtor
+            BT dtor
+            ***
+            BT move ctor, mozgato 
+            BT move assign ctor, mozgato ertekadas
+            BT dtor
+            BT dtor
+            BT dtor
+            BT dtor
+            BT dtor
+
+        ]]>
+        </screen>
+    </section>  
+
+    <section>
+        <title>6.7 Steve szemüvege</title>
+        <para>
+            Megoldás videó: <link xlink:href="https://www.youtube.com/watch?v=DX8dI04rWtk">https://www.youtube.com/watch?v=DX8dI04rWtk</link>
+          </para>
+          <para>
+            Steve 2 módon láthat. Az egyik a lineOfSight, azaz azt a blokkot látja amin a kereszt van. A másik mód pedig egy körülötte lévő cuboidot használ.
+            Ezt az xml módosításával kiterjeszthetjük az alap 3x3x3-masról akár 7x7x7-esre is. Itt fontos arra ügyelni hogy mely általa érzékelt blokkokkal 
+            szeretnénk dolgozni, ugyanis ezek egy tömbben vannak eltárolva és meg ios vannak számozva. Ezeknek a cuboidoknak a közepén van mindig Steve. 
+            Ezekre a tömbbeli elemekre tudunk hivatkozni tehát ki tudjuk íratni a tartalmukat, vagy egy if függvénnyel külön tudunk kiíratást csinálni
+            hogy mondja el Steve hol és mit lát.
+          </para>
+    </section>                      
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
+</chapter>                
