@@ -1,0 +1,515 @@
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude" version="5.0" xml:lang="hu">
+    <info>
+        <title>Helló, Conway!</title>
+        <keywordset>
+            <keyword/>
+        </keywordset>
+    </info>
+    <section>
+        <title>8.1 Hangyaszimulációk</title>
+        <para>
+            Írj Qt C++-ban egy hangyaszimulációs programot, a forrásaidról utólag reverse engineering jelleggel
+            készíts UML osztálydiagramot is!
+        </para>
+        <para>
+            Megoldás videó: <link xlink:href="https://bhaxor.blog.hu/2018/10/10/myrmecologist">https://bhaxor.blog.hu/2018/10/10/myrmecologist</link>
+        </para>
+        <para>
+            Megoldás forrása: <link xlink:href=""></link>               
+        </para>
+        <para>
+            Ebben a feladatban egy hangyaszimulációs programot vizsgálunk. Ahhoz, hogy megértsük működésének alapjait,
+            ismernünk kell a valódi hangyák viselkedését is. Nekem egy rövid ideig, volt egy kb 30 hangyából álló apró 
+            hangyakolóniám, sajnos a felelőtlenségem miatt elpusztultak (nem megfelő ételt adtam nekik) de addig is picit 
+            beleláttam, hogy hogyan élnek együtt. A hangyák úgynevezett kolónitudattal élnek, egy-egy példánynak esélye sincs 
+            egyedül túlélni, nagyon szorosan egymásra vannak utalva, gyakorlatilag a kolóniára úgy kell tekintenünk mint egy 
+            állatra, mikor ettettem a hangyáimat akkor is ezt a szempontot kellett szem előtt tartani, hogy úgy adjak nekik 
+            élelmet, hogy az a teljes bolynak elég legyen. A valóságtól való első számú különbség a szimulációs programban, 
+            hogy itt a hangyabolyban nincs királynő, pedig egyébként ténylegesen ő a hangyaboly legfontosabb eleme, tehát ha 
+            ő elpusztul a boly nem tud túlélni, elsősorban amiatt hogy csak a királynő tud petéket lerakni, de egyébként sem 
+            tudnak királynő nélkül élni.
+        </para> 
+        <mediaobject>
+            <imageobject>
+                <imagedata fileref ="./img/hangya.png" format="PNG" scale="20" />
+            </imageobject>
+        </mediaobject> 
+        <para>
+            Maga program egyébként 5 db C++ kódból és 4 db headerből áll. Nem fogom mindet részletesen bemutatni, mert nekem is 
+            feleslegesen sok munka lenne és az olvasót sem szeretném untatni, szóval a számomra érdekesebb részekről fogok írni.
+            Mivel GUI-cal szeretnénk megjeleníteni a programot, ezrt ismét a Qt-t hívtuk segítségül, végül sikerült ezt a Linux 
+            Mint-emen is megoldani és a qmake make parancsok majd a "myrmecologist" futtatása után szépe kirajzolódott a hangyabolyom.
+            Az ablakban a következőket láthatjuk: a pici mozgó négyzetek nyílván a hanygáink, ezek zöld szálakat húznak maguk után, 
+            ezek a maguk mögött hagyott feromon nyomok, ezek alapján tudnak megfelően mozogni, és láthatóan egy nagy rácshálót, ami 
+            az egész programablakot beteríti. Ez a rács szerintem rendkívűl zavarja a szemet és az ember nem szívesen nézi így perceken
+            át a hangyákat szóval én azt világosszürkére állítottam, látható az alábbi, antwin.cpp-ből kódcsipetben, a QPaintEvent felel 
+            ugyanis a megjelenítésért.
+        </para>  
+
+        <programlisting language='c++'>
+            <![CDATA[
+            void AntWin::paintEvent ( QPaintEvent* )
+{
+    QPainter qpainter ( this );
+
+    grid = grids[gridIdx];
+
+    for ( int i=0; i<height; ++i ) {
+        for ( int j=0; j<width; ++j ) {
+
+            double rel = 255.0/max;
+
+            qpainter.fillRect ( j*cellWidth, i*cellHeight,
+                                cellWidth, cellHeight,
+                                QColor ( 255 - grid[i][j]*rel, //255 volt mindhárom
+                                         255,
+                                         255 - grid[i][j]*rel) );
+
+            if ( grid[i][j] != min )
+            {
+                qpainter.setPen (
+                    QPen (
+                        QColor ( 255 - grid[i][j]*rel,          //255
+                                 255 - grid[i][j]*rel, 255),
+                        1 )
+                );
+
+                qpainter.drawRect ( j*cellWidth, i*cellHeight,
+                                    cellWidth, cellHeight );
+            }
+
+
+
+            qpainter.setPen (
+                QPen (
+                    QColor (150,150,150 ), //0,0,0
+                    1 )
+            );
+
+            qpainter.drawRect ( j*cellWidth, i*cellHeight,
+                                cellWidth, cellHeight );
+
+        }
+    }
+        ]]>
+        </programlisting>  
+
+        <para>
+            Az antwin.cpp-ben ebben a kódrészletben van egyébként nagyon sok dolog ami a GUI megjelenítésért felel. Mos más dolgunk 
+            nem igazán volt a Qt-vel, nincs mouseMove Event stb. Mivel ez egy szimuláció, nyílván nem interaktív. 
+        </para>  
+
+        <para>
+            A programunkban tehát jelenleg csak dolgozókkal találkozunk és az ő mozgásukat tudjuk megfigyelni. Ha elindítottuk 
+            a programot, akkor láthatjuk, hogy különböző pontokon jelennek meg a hangyáink, ahhoz hogy így induljon el a program 
+            és ne egy pontban jelenjen meg az összes hangya, a main.cpp-ben a qsrand függvény segítségére volt szükség, erről 
+            teszek is ide egy kódcsipetet. Fontos ugye, hogy ne egy helyen jöjjenek létre.
+        </para>   
+        <programlisting language='c++'>
+            <![CDATA[
+            qsrand ( QDateTime::currentMSecsSinceEpoch() );
+        ]]>
+        </programlisting>  
+     
+
+
+    </section>        
+    <section>
+        <title>8.2 Java életjáték</title>
+        <para>
+            Írd meg Java-ban a John Horton Conway-féle életjátékot, 
+            valósítsa meg a sikló-kilövőt!
+        </para>
+        <para>
+            Megoldás videó: 
+        </para>
+        <para>
+            Megoldás forrása: <link xlink:href=""></link>               
+        </para>
+        <para>
+            A játékot John Horton Conway. Cambridge-i matematikus alkotta meg. A játék egy sejtautomata.
+            A lényege az hogy, szimulálja a sejtek életét, egyszerű szabályok meghatározásával. Maga a "játékmenet"
+            egyébként eléggé passzív, a játkosnak annyi dolga van, hogy az első generációni sejtet ő helyezi el a rácshálón 
+            majd figyeli mi történik velük.
+        </para> 
+        <para>
+            Mivel a következő feladat is ugyanerről az életjátékról szól csak C++ megvalósításban arra gondoltam, hogy a 
+            játékról magáról itt írok bővebben, a következő feladatban pedig inkább a kódot vizsgáljuk. Szóval ismerjük is 
+            meg a szabályokat!
+        </para>
+        <para>
+            A sejtek a rácshálóban egy 8 rácspontnyi távolságban tudnak "érzékeéni". Ez azért fontos mert egy sejt önmagában 
+            elpusztul, szüksége van más sejtekre is a környezetében, ezeknek a száma 2 és 3 lehet, a közvetlen szomszédságában. 
+            Tehát 1 sejt 1 szomszéddal elpusztul de ha 3-nál több szomszédja van, akkor már "túlszaporodtak" és megint elpusztul 
+            az a sejt amelynek több szomszédja van. Új sejt születik akkor ha egy sejtnek pontosan 3 szomszédja van. a játék körökre, 
+            generációkra bontható, és minden generáció változásait vizsgálhatjuk. A játék szabályai ilyen egyszerűek mégis nagyon 
+            összetett dolgokkal találkozhatunk.
+        </para>
+        <para>
+            A játék során kialakulhatnak úgynevezett stabil alakzatok,  ilyen például egy egyszerű négyzet amely 4 db sejtből áll, 
+            ekkor minden sejtnek 3 szomszédja van tehát túlélik a kört. Az egyik leghíresebb azakzat az a "sikló" amely átlósan 
+            tud mozogni is, iletve a vízszintesen mozgó űrhajó. Ezek olyan alakzatok amelyek idővel "mozgásuk során" önmagukba 
+            alakulnak vissza. Csatolok is róluk ided egy képet, arról mikor futattam ezt a programt:
+        </para>
+
+        <mediaobject>
+            <imageobject>
+                <imagedata fileref ="./img/java_gof.png" format="PNG" scale="20" />
+            </imageobject>
+        </mediaobject> 
+
+        <para>
+            Fontosnak tartom mgejegyezni, hogy olyan lakzatok is kirajzolódhatnak a játék futása során amelyek természetes jelenségekre 
+            hasonlítanak. Ilyen pl.: egy furcsa tintapaca szerű nagyjából összefüggő alak, az ilyen jellegű mintákat sok helyen tudják 
+            hasznosítani, ilyen lehet mondjuk a barlagok generálása is, aminél ezt egyébként nagyon gyakran alkalmazzák is.
+        </para>
+        <para>
+            Na és ha már java, nem hagyhatom ki hogy megmutassam miket találtam, a youtube-on. Több minecraftos megvalósítása is 
+            létezik ennek a játéknak, mégpedig úgy, hogy a 3D-s térben zajlanak ezek az események.
+        </para>
+        <para>
+            Minecraft 3D <link xlink:href="https://www.youtube.com/watch?v=wNypW-aSCmE">https://www.youtube.com/watch?v=wNypW-aSCmE</link>               
+        </para>
+
+
+    </section>        
+    <section>
+        <title>8.3 Qt C++ életjáték</title>
+        <para>
+            Most Qt C++-ban!
+        </para>
+        
+        <mediaobject>
+            <imageobject>
+                <imagedata fileref ="./img/sejtauto.png" format="PNG" scale="20" />
+            </imageobject>
+        </mediaobject> 
+
+        <para>
+            Megoldás forrása: <link xlink:href=""></link>               
+        </para>
+        <para>
+            Ez a Qt C++ megvalósítás egy egészen összetett, objetumorientált progam. Először a sejtablak.h-val kezdeném.
+            Ebben a programban, rögzítjük a változókat, szélességet, magasságot, illetve meghatározzuk, hogy eg ysejt lehet
+            élő vagy halott sejt.
+        </para>  
+        <programlisting language='c++'>
+            <![CDATA[
+
+        class SejtAblak : public QMainWindow
+{
+  Q_OBJECT
+
+public:
+  SejtAblak(int szelesseg = 100, int magassag = 75, QWidget *parent = 0);
+
+  ~SejtAblak();
+  // Egy sejt lehet elo
+  static const bool ELO = true;
+  // vagy halott
+  static const bool HALOTT = false;
+  void vissza(int racsIndex);
+]]>
+        </programlisting> 
+
+        <para>
+            Eztán találunk egy protected részt, itt van egy ***rácsok mutató, ez azért, kell mert egyszerre 2 db mátrixra
+            szeretnénk rámutatni, ez amiatt kell, mert amikor lépünk generációt, nem kerülhet oda élő sejt ahol halott van.
+            Ezen kívűl ami még fontos, hogy itt találjuk a pintEventet, és a void siklo illetve a void sikloKilovo-t is.
+            a sikloKilovo azért fontos mert ebben a verzióban nem a felhasználóra van bízva a játék kezdete, hanem előre defeniált.
+        </para> 
+        <programlisting language='c++'>
+            <![CDATA[
+
+protected:
+  
+  bool ***racsok;
+  
+  bool **racs;
+  
+  int racsIndex;
+  
+  int cellaSzelesseg;
+  int cellaMagassag;
+  
+  int szelesseg;
+  int magassag;
+  void paintEvent(QPaintEvent*);
+  void siklo(bool **racs, int x, int y);
+  void sikloKilovo(bool **racs, int x, int y);
+  ]]>
+        </programlisting> 
+
+        <para>
+            Tekintsük meg a sejtablak.cpp--t is! Itt több függvényt is találunk, az első a sejtAblak, itt hozzuk létre
+            magát a programablakot, szélességgel, magassággal, a cellák szélességével és magasságával együtt, 
+            illetve ebben létrehozzuk a mátrixainkat is. Illetve leszögezzük, hogy a kiinduló programban minden cella 
+            halott. Ezután pedig start függvény tudja indítani a programot.
+        </para> 
+
+        <para>
+            Az alábbi kódcsipetben pedig megtaláljuk a paintEvent-et. Itt is mátrix-szal dolgozunk.
+        </para> 
+
+        <programlisting language='c++'>
+            <![CDATA[
+
+void SejtAblak::paintEvent(QPaintEvent*) {
+  QPainter qpainter(this);
+
+  // Az aktualis
+  bool **racs = racsok[racsIndex];
+  // racsot rajzoljuk ki:
+  for(int i=0; i<magassag; ++i) { // vegig lepked a sorokon
+    for(int j=0; j<szelesseg; ++j) { // s az oszlopok
+      // Sejt cella kirajzolasa
+      if(racs[i][j] == ELO) //feltölti az adott színnel
+	qpainter.fillRect(j*cellaSzelesseg, i*cellaMagassag,
+			  cellaSzelesseg, cellaMagassag, Qt::black);
+	else
+	  qpainter.fillRect(j*cellaSzelesseg, i*cellaMagassag,
+			    cellaSzelesseg, cellaMagassag, Qt::white);
+	  qpainter.setPen(QPen(Qt::gray, 1));
+
+	qpainter.drawRect(j*cellaSzelesseg, i*cellaMagassag,
+			  cellaSzelesseg, cellaMagassag);
+    }
+  }
+
+  qpainter.end();
+}
+
+]]>
+        </programlisting> 
+        <para>
+            Itt ebben a kódcsipetben pedig a folyamatos frissülésért felelős függvényt találjuk:
+        </para>
+
+        <programlisting language='c++'>
+            <![CDATA[
+        void SejtAblak::vissza(int racsIndex) //frissít
+{
+  this->racsIndex = racsIndex;
+  update(); // ő meghívja a paint eventet
+}
+    ]]>
+        </programlisting> 
+
+        <para>
+            Ebben a részben pedig az egész sejtszal.cpp-t találjuk. Ennek érdekessége, hogy az előző feladatban említett
+            szabályok vannak leírva C++ nyelven.
+        </para>
+
+        <programlisting language='c++'>
+            <![CDATA[
+            #include "sejtszal.h"
+
+SejtSzal::SejtSzal(bool ***racsok, int szelesseg, int magassag, int varakozas, SejtAblak *sejtAblak)
+{
+    this->racsok = racsok;
+    this->szelesseg = szelesseg;
+    this->magassag = magassag;
+    this->varakozas = varakozas;
+    this->sejtAblak = sejtAblak;
+
+    racsIndex = 0;
+}
+
+/**
+   * Az kerdezett allapotban levo nyolcszomszedok szama.
+   *
+   * @param   racs    a sejtter racs
+   * @param   sor     a racs vizsgalt sora
+   * @param   oszlop  a racs vizsgalt oszlopa
+   * @param   allapor a nyolcszomszedok vizsgalt allapota
+   * @return int a kerdezett allapotbeli nyolcszomszedok szama.
+   */
+int SejtSzal::szomszedokSzama(bool **racs,
+                              int sor, int oszlop, bool allapot) {
+    int allapotuSzomszed = 0;
+    // A nyolcszomszedok vegigzongorazasa:
+    for(int i=-1; i<2; ++i)
+        for(int j=-1; j<2; ++j)
+            // A vizsgalt sejtet magat kihagyva:
+            if(!((i==0) && (j==0))) {
+        // A sejtterbol szelenek szomszedai
+        // a szembe oldalakon ("periodikus hatarfeltetel")
+        int o = oszlop + j;
+        if(o < 0)
+            o = szelesseg-1;
+        else if(o >= szelesseg)
+            o = 0;
+
+        int s = sor + i;
+        if(s < 0)
+            s = magassag-1;
+        else if(s >= magassag)
+            s = 0;
+
+        if(racs[s][o] == allapot)
+            ++allapotuSzomszed;
+    }
+
+    return allapotuSzomszed;
+}
+
+/**
+ * A sejtter idobeli fejlodese a John H. Conway fele
+ * eletjatek sejtautomata szabalyai alapjan tortenik.
+ * A szabalyok reszletes ismerteteset lasd peldaul a
+ * [MATEK JATEK] hivatkozasban (Csakany Bela: Diszkret
+ * matematikai jatekok. Polygon, Szeged 1998. 171. oldal.)
+ */
+void SejtSzal::idoFejlodes() {
+
+    bool **racsElotte = racsok[racsIndex];
+    bool **racsUtana = racsok[(racsIndex+1)%2];
+
+    for(int i=0; i<magassag; ++i) { // sorok
+        for(int j=0; j<szelesseg; ++j) { // oszlopok
+
+            int elok = szomszedokSzama(racsElotte, i, j, SejtAblak::ELO);
+
+            if(racsElotte[i][j] == SejtAblak::ELO) {
+                /* Elo elo marad, ha ketto vagy harom elo
+             szomszedja van, kulonben halott lesz. */
+                if(elok==2 || elok==3)
+                    racsUtana[i][j] = SejtAblak::ELO;
+                else
+                    racsUtana[i][j] = SejtAblak::HALOTT;
+            }  else {
+                /* Halott halott marad, ha harom elo
+             szomszedja van, kulonben elo lesz. */
+                if(elok==3)
+                    racsUtana[i][j] = SejtAblak::ELO;
+                else
+                    racsUtana[i][j] = SejtAblak::HALOTT;
+            }
+        }
+    }
+    racsIndex = (racsIndex+1)%2;
+}
+
+
+/** A sejtter idobeli fejlodese. */
+void SejtSzal::run()
+{
+    while(true) {
+        QThread::msleep(varakozas);
+        idoFejlodes();
+        sejtAblak->vissza(racsIndex);
+    }
+
+}
+
+SejtSzal::~SejtSzal()
+{
+}
+          ]]>
+        </programlisting> 
+
+    </section>        
+    <section>
+        <title>8.4 BrainB Benchmark</title>
+        
+        <para>
+            Megoldás videó: 
+        </para>
+        <para>
+            Megoldás forrása: <link xlink:href=""></link>               
+        </para>
+        <para>
+            Aki, a félév elején bekapcsolódott a TP vadászatba, annak ismerős lesz ez a program. 
+            Ez a BrainB program Bátfai Norbert Tanár Úr illetve más fejlesztők által megírt program. Maga a program 
+            egy játék, ami gyakorlatilag egy pszichológiai teszt. A lényeg a következő: Van egy felületünk, amin félig átlátszó
+            négyzetek jelennek meg, ezek közül van egy kibálasztott különleges négyzet, amit Samu entrophy-nak nevezünk. 
+            A játék 10 perces, 10 per után leáll magától. A 10 perc leforgása alatt a játékosnak 1 feladata van, mégpedig, hogy a Samu 
+            entrophy-n tartsa az egerét lenyomott egérgombbal. Elsőre ez nem is tűnik olyan nehéz feladatnak viszont találkozunk nehezítő 
+            tényezőkkel. Ugyanolyan kinézetű négyzetek jelennek meg sorra mint a Samu entrophy, és mindegyikőjük apró mozgásokat végez.
+            Említettem, hogy félig átlátszóak ezek a négyzetek tehát valameddig lehet is követni a dolgot, de egy idő után szinte 
+            teljesen elveszítjük Samut. Pont emiatt érdekes teszt lehet, hogy a játék során a sajá karakterünket és annak körülményeit nem 
+            mi irányítjuk. A játék 10 perc, se kevesebb sem több, tehát nem ér véget a játék ha eetleg levszetettük Samut, ilyenkor meg kell
+            keresnünk! A program ezeket az elhaygyásokat is rögzíti és a végső kimenetében ezeket is számolj a teljesítményünk kiértékelésekor.
+        </para> 
+        <para>
+            A program folyamatosan vizsgálja és frissíti azokat az adatokat amelyek a végeredmény meghatározásáhhoz kellenek. Ilynek pl.:
+            Samu pozíciója illetve az egér pozíciója és az ezek közti távolság. Ezen kívűl említettem már, hogy ha elhagytuk Samut akkor 
+            sincs minden veszve, a forráskódban található egy függény, az "updateHeroes" itt tartja számon a program, hogy hányszor 
+            vesztettük el samu és a megtalálásokat is feljegyzi.
+        </para>  
+
+        <programlisting language='c++'>
+            <![CDATA[
+                void BrainBWin::updateHeroes ( const QImage &image, const int &x, const int &y )
+{
+
+        if ( start && !brainBThread->get_paused() ) {
+
+                int dist = ( this->mouse_x - x ) * ( this->mouse_x - x ) + ( this->mouse_y - y ) * ( this->mouse_y - y );
+
+                if ( dist > 121 ) {
+                        ++nofLost;
+                        nofFound = 0;
+                        if ( nofLost > 12 ) {
+
+                                if ( state == found && firstLost ) {
+                                        found2lost.push_back ( brainBThread->get_bps() );
+                                }
+
+                                firstLost = true;
+
+                                state = lost;
+                                nofLost = 0;
+                                //qDebug() << "LOST";
+                                //double mean = brainBThread->meanLost();
+                                //qDebug() << mean;
+
+                                brainBThread->decComp();
+                        }
+                } else {
+                        ++nofFound;
+                        nofLost = 0;
+                        if ( nofFound > 12 ) {
+
+                                if ( state == lost && firstLost ) {
+                                        lost2found.push_back ( brainBThread->get_bps() );
+                                }
+
+                                state = found;
+                                nofFound = 0;
+                                //qDebug() << "FOUND";
+                                //double mean = brainBThread->meanFound();
+                                //qDebug() << mean;
+
+                                brainBThread->incComp();
+                        }
+
+                }
+
+        }
+        pixmap = QPixmap::fromImage ( image );
+        update();
+}
+
+            ]]>
+        </programlisting>        
+    </section>
+
+    <section>
+        <title>8.5 Malmö 19 RF</title>
+        <para>
+            A félév során volt egy feladat amiben, Bátfai Norbert Tanár Úr adott nekünk egy kódot amivel 
+            Steve 19 pipacs felszdeésére volt képes és ezt kellett úgy továbbfejlesztenünk, hogy több virágot
+            tudjon szedni, erről fogom csatolni a videónkat. 
+        </para>
+        <para>
+            
+        </para>
+
+
+
+    </section>
+
+
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
+</chapter>                
