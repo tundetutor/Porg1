@@ -6,22 +6,37 @@
         </keywordset>
     </info>
     <section xml:id="bhax-textbook-feladatok-mandelbrot.Mandelbrot">
-        <title>5.1 A Mandelbrot halmaz</title>
+        <title>A Mandelbrot halmaz</title>
         <para>
             Írj olyan C programot, amely kiszámolja a Mandelbrot halmazt!     
         </para>
-        
         <para>
             Megoldás videó: <link xlink:href="https://youtu.be/gvaqijHlRUs">https://youtu.be/gvaqijHlRUs</link>
         </para>
+        <para>
+            Megoldás forrása:                
+ <link xlink:href="../../../bhax/attention_raising/CUDA/mandelpngt.c++">
+                <filename>bhax/attention_raising/CUDA/mandelpngt.c++</filename>
+            </link> nevű állománya.            
+        </para>
+                <figure>
+            <title>A Mandelbrot halmaz a komplex síkon</title>
+            <mediaobject>
+                <imageobject>
+                    <imagedata fileref="img/mandel.png" scale="25" />
+                </imageobject>
+                <textobject>
+                    <phrase>A Mandelbrot halmaz a komplex síkon</phrase>
+                </textobject>
+            </mediaobject>
+        </figure>
         <para>
             A Mandelbrot halmazt 1980-ban találta meg Benoit Mandelbrot a 
             komplex számsíkon. Komplex számok azok a számok, amelyek körében 
             válaszolni lehet az olyan egyébként értelmezhetetlen kérdésekre, 
             hogy melyik az a két szám, amelyet összeszorozva -9-et kapunk, 
-            mert ez a szám például a 3i komplex szám. 
+            mert ez a szám például a 3i komplex szám.
         </para>
-
         <para>             
             A Mandelbrot halmazt úgy láthatjuk meg, hogy a sík origója középpontú 4 
             oldalhosszúságú négyzetbe lefektetünk egy, mondjuk 800x800-as 
@@ -75,135 +90,8 @@
             színezzük, hogy az a c rácspont a halmaz része. (Színes meg úgy 
             lesz a kép, hogy változatosan színezzük, például minél későbbi 
             z-nél lép ki a körből, annál sötétebbre). 
-        </para>      
-        <para>
-            A feladat leírását azzal szeretném kezdeni, hogy a feladatban tárgyalt kód Bátfai Norberté és ez egy C++ 
-            kód, mivel nem sikerült megfelő <command>libpng</command> könyvtárat telepítenem C nyelvhez. Mivel a kód 
-            nem használja a komplex osztályt ezért úgy kell gondolkodni mintha azt magunk akarnánk létrehozni.
-        </para> 
-        <para>   
-            A program maga a Mandelbrot halmazt rajzolja ki a komplex számsíkon. A Mandelbrot-halmaz volt az egyik első olyan fraktál alakzat amit felfedeztek. 
-            A fraktáloknak jelenleg még nincsen konkrétan megfogalmazott szigorú matematikai definíciója mivel a definíció megalkotásakor mindig valamilyen ellentmondásba ütközünk.
-            Ahogy jellemezni tudjuk őket, önhasonló alakzatok, azaz ha bizonyos részeikre ránagyítunk, mint a Mandelbrot-halmaz határterületei esetén is, az eredti alakzatot 
-            kapjuk vissza ezáltal egy végteleül összetett struktúrát alkotva. A nevüket a latin "fractus" azaz töredzettség szóból származtatjuk ami a fraktálalakzatok határterületein 
-            megjelenő matematikailag nehezen leírható önismétlődésre utal, mivel ezáltal nem jön létre tényleges határvonal például a Mandelbrot halmaz esetén sem.
-            Viszont a természet nagyon sok fraktálszerű önhasonló struktúrában rendeződik, 
-            ilyen például a hegyek csipkézettsége, a növények növekedési logikája, vagy éppen a villámok is. Az álatalam egyik generált kép nekem pont a villámok által
-            alkotott alakzatokat jutatta eszembe, ezért ezt az ábrát ide illesztem.
-        </para>
-
-        <mediaobject>
-            <imageobject>
-                <imagedata fileref ="./img/villám.png" format="PNG" scale="40" />
-            </imageobject>
-        </mediaobject> 
-
-        <para>
-            A program a <command>png++/png.hpp</command> könyvtár meghívásával kezdődik, ez szükséges ahhoz, hogy png-t tudjunk generálni.
-            Ezután definiáljuk a szükséges konstansokat, ezek közül az N és az M határozzák meg, hogy mekkora méretű legyen az elkészült png. 
-            Én ezeket duplájukra, azaz 1000-re növeltem hogy élesebb képet kaphassunk., ha ettől nagyobb számra növeljük, például 2000-re, szegmentálási 
-            hiba léphet fel, óvatosa kell kiválasztani a számot. Ezen kívűl szükségünk van a maximum illetve minimum x és y értékekre.
-        </para> 
-        <programlisting language="c++">
-<![CDATA[
-
-#include <png++/png.hpp>
-
-#define N 1000
-#define M 1000
-#define MAXX 0.7
-#define MINX -2.0
-#define MAXY 1.35
-#define MINY -1.35
-]]>
-        </programlisting> 
-        <para>
-            A következő fontos része a programunknak egy eljárás, viszont ez a program legvégén hívódik meg ezért ezt ott fogom kifejteni.
-        </para>
-      
-        <para>
-            Ahhoz, hogy a komplex osztály nélkül tudjunk a komplex számsíkon dolgozni a programban létre kell hozni a komplex struktúrát.
-            Ezzel tudjuk a komplex számainkat valós (re) és imaginárius (im) egységre bontani. Ezután a főprogramban létrehozunk egy <command>N*M</command> elemű 
-            kétdimenziós tömböt, ebbe fogjuk eltárolni, hogy a png mely léppontjai milyen színűek legyenek. A színek meghatározásához létrehozunk
-            egy <command>iteracio</command> nevű változót. A program végigmegy a tömbön két for ciklussal amiben található egy while ciklus. 
-            A while ciklus maximum 256 alkalommal futhat le és közben az <command>iteracio</command> változóban számoljuk a futások számát. amennyiben az iteráció 
-            256 alkalommal futott le az azt jelenti, hogy az adott érték nem tudott kilépni a Mandelbrot halmazból, annak része tehát a pixel fekete lesz az ábrán.
-        </para>
-        <programlisting language="c++">
-<![CDATA[ 
-struct Komplex
-{
-    double re, im;
-};
-
-int main()
-{
-    int tomb[N][M];
-
-    int i, j, k;
-
-    double dx = (MAXX - MINX) / N;
-    double dy = (MAXY - MINY) / M;
-
-    struct Komplex C, Z, Zuj;
-
-    int iteracio;
-
-    for (i = 0; i < M; i++)
-    {
-        for (j = 0; j < N; j++)
-        {
-            C.re = MINX + j * dx;
-            C.im = MAXY - i * dy;
-
-            Z.re = 0;
-            Z.im = 0;
-            iteracio = 0;
-
-            while(Z.re * Z.re + Z.im * Z.im < 4 && iteracio++ < 255)
-            {
-                Zuj.re = Z.re * Z.re - Z.im * Z.im + C.re;
-                Zuj.im = 2 * Z.re * Z.im + C.im;
-                Z.re = Zuj.re;
-                Z.im = Zuj.im;
-            }
-
-            tomb[i][j] = iteracio - 1;//iteracio % 1; //256 - iteracio 
-        }
-    }
-
-    GeneratePNG(tomb);
-
-    return 0;
-}
-        ]]>
-        </programlisting> 
-        <para>
-            A pixelek színének meghatározása tehát az iterációtól függ. én módosítottam egy kicsit a programon, az alap programban maga a halmaz fekete színű, 
-            ekkor a főprogram utolsó sorában a <command>tomb[i][j] = 256 - iteracio;</command> kifejezés szerepel. Viszont ha változtatunk ezen az értékadáson 
-            <command>tomb[i][j] = iteracio - 1;</command>-re akkor az eredi inverzét kapjuk. Ha az iterációk számából vonunk ki 256-ot akkor pedig 
-            a halmaz maga is fekete lesz és az eredi program által rajzolt ábra beli részek is feketék lesznek viszont a halmaz közvetlen környezete fehér vagy nagyon világos 
-            szürkés színű. 
-        </para>
-        <programlisting language="c++">
-<![CDATA[  
-void GeneratePNG( int tomb[N][M])
-{
-    png::image< png::rgb_pixel > image(N, M);
-    for (int x = 0; x < N; x++)
-    {
-        for (int y = 0; y < M; y++)
-        {
-            image[y][x] = png::rgb_pixel(tomb[x][y], tomb[x][y], tomb[x][y]); //x y
-        }
-    }
-    image.write("kimenet.png");
-}
-]]>
-        </programlisting> 
-        <para>
-            A program utolsó része a png generáló eljárás, itt is 2 for ciklus segítségével megyünk végig a kétdimenziós tömbön és megadjuk a pixelek értékét színbeli értékét.
-            Én itt is módosítottam kicsit a képen ugyanis elforgattam, ehhez annyit kell tennünk hogy a pixelek értékadásánál az <command>x</command> és <command>y</command>-t felcseréljöük.
+        </para>       
+        <para>        
         </para>
 
     </section>        
@@ -216,125 +104,129 @@ void GeneratePNG( int tomb[N][M])
         <para>
             Megoldás videó: <link xlink:href="https://youtu.be/gvaqijHlRUs">https://youtu.be/gvaqijHlRUs</link>
         </para>
-        
-        <mediaobject>
-            <imageobject>
-                <imagedata fileref ="./img/mlkomplex.png" format="PNG" scale="55" />
-            </imageobject>
-        </mediaobject>    
-
         <para>
-            A C++ sok változást hozott a C-vel szemben, több beépített osztályt és beépített függvényt találunk benne. 
-            Ezek között szerepel az <filename>std::complex</filename> osztály is. Az előző feladatban a programban magunk hoztuk létre 
-            a komplex struktúrát most viszont ki is használjuk a C++ előnyeit. A program maga szinte megegyezik az előző feladatban tárgyalttal, 
-            ez is Bátfai Norbert által írt program. Vizsgáljuk meg a különbségeket!          
+            Megoldás forrása: BHAX repó, <link xlink:href="https://gitlab.com/nbatfai/bhax/-/blob/master/attention_raising/Mandelbrot/3.1.2.cpp">https://gitlab.com/nbatfai/bhax/-/blob/master/attention_raising/Mandelbrot/3.1.2.cpp</link>               
         </para>
-        <para>
-            Az első fontos különbség, hogy a <command>png++/png.hpp</command> könyvtár meghívása után egyből meghívjuk a <command>complex</command> 
-            osztályt, ez a C++ beépített osztálya a komplex számokkal való kényelmesebb munkához. A <command>GeneratePNG</command> eljárás is megegyezik 
-            az előző feladatban tárgyalttal ezért annak leírását ott lehet megtekinteni.
+        <para>        
+A <link xlink:href="#bhax-textbook-feladatok-mandelbrot.Mandelbrot">Mandelbrot halmaz</link> pontban vázolt
+ismert algoritmust valósítja meg a repó <link xlink:href="../../../bhax/attention_raising/Mandelbrot/3.1.2.cpp">
+                <filename>bhax/attention_raising/Mandelbrot/3.1.2.cpp</filename>
+            </link> nevű állománya.
         </para>
         
         <programlisting language="c++">
-<![CDATA[#include <png++/png.hpp>
+<![CDATA[// Verzio: 3.1.2.cpp
+// Forditas:
+// g++ 3.1.2.cpp -lpng -O3 -o 3.1.2
+// Futtatas:
+// ./3.1.2 mandel.png 1920 1080 2040 -0.01947381057309366392260585598705802112818 -0.0194738105725413418456426484226540196687 0.7985057569338268601555341774655971676111 0.798505756934379196110285192844457924366
+// ./3.1.2 mandel.png 1920 1080 1020 0.4127655418209589255340574709407519549131 0.4127655418245818053080142817634623497725 0.2135387051768746491386963270997512154281 0.2135387051804975289126531379224616102874
+// Nyomtatas:
+// a2ps 3.1.2.cpp -o 3.1.2.cpp.pdf -1 --line-numbers=1  --left-footer="BATF41 HAXOR STR34M" --right-footer="https://bhaxor.blog.hu/" --pro=color
+// ps2pdf 3.1.2.cpp.pdf 3.1.2.cpp.pdf.pdf
+//
+//
+// Copyright (C) 2019
+// Norbert Bátfai, batfai.norbert@inf.unideb.hu
+//
+//  This program is free software: you can redistribute it and/or modify
+//  it under the terms of the GNU General Public License as published by
+//  the Free Software Foundation, either version 3 of the License, or
+//  (at your option) any later version.
+//
+//  This program is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU General Public License for more details.
+//
+//  You should have received a copy of the GNU General Public License
+//  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+
+#include <iostream>
+#include "png++/png.hpp"
 #include <complex>
 
-const int N = 500;
-const int M = 500;
-const double MAXX = 0.7;
-const double MINX = -2.0;
-const double MAXY = 1.35;
-const double MINY = -1.35;
-
-void GeneratePNG(const int tomb[N][M])
+int
+main ( int argc, char *argv[] )
 {
-    png::image< png::rgb_pixel > image(N, M);
-    for (int x = 0; x < N; x++)
+
+  int szelesseg = 1920;
+  int magassag = 1080;
+  int iteraciosHatar = 255;
+  double a = -1.9;
+  double b = 0.7;
+  double c = -1.3;
+  double d = 1.3;
+
+  if ( argc == 9 )
     {
-        for (int y = 0; y < M; y++)
-        {
-            image[x][y] = png::rgb_pixel(tomb[x][y], tomb[x][y], tomb[x][y]);
-        }
+      szelesseg = atoi ( argv[2] );
+      magassag =  atoi ( argv[3] );
+      iteraciosHatar =  atoi ( argv[4] );
+      a = atof ( argv[5] );
+      b = atof ( argv[6] );
+      c = atof ( argv[7] );
+      d = atof ( argv[8] );
     }
-    image.write("kimenet.png");
-}
-
-]]>
-        </programlisting>
-        <para>
-            A legnagyobb különbség persze a főprogramunkban van, azon belül is abban a részben, ahol a Mandelbrot-halmazt számoltatjuk a programmal. 
-            A matematikai háttere ugyanaz a két programnak csupán a komplex számokkal való folyamatok térnek el. Az előző programban ehhez egy struktúrát 
-            használtunk, mégpedig olyat, hogy két részre bontottuk a komplex számokat, valós és imaginárius egységre. Ennek a leegyszerűsétésére szolgál a 
-            komplex osztály, ugyanis egy értékadással tudunk értéket adni a C és Z számoknak, nem kell a két részüket külön kezelni mint az előző esetben ezáltal 
-            egy keveset rövidül is a program. Mivel a kép generálása és a pixelek színének meghatározásának folyamata egyezik az előző feladatban tárgyaltéval a 
-            részletesebb leírást ott lehet megtalálni.
-        </para>
-
-        <programlisting language="c++">
-<![CDATA[
-int main()
-{
-    int tomb[N][M];
-
-    double dx = ((MAXX - MINX) / N);
-    double dy = ((MAXY - MINY) / M);
-
-    std::complex<double> C, Z, Zuj;
-
-    int iteracio;
-
-    for (int i = 0; i < M; i++)
+  else
     {
-        for (int j = 0; j < N; j++)
+      std::cout << "Hasznalat: ./3.1.2 fajlnev szelesseg magassag n a b c d" << std::endl;
+      return -1;
+    }
+
+  png::image < png::rgb_pixel > kep ( szelesseg, magassag );
+
+  double dx = ( b - a ) / szelesseg;
+  double dy = ( d - c ) / magassag;
+  double reC, imC, reZ, imZ;
+  int iteracio = 0;
+
+  std::cout << "Szamitas\n";
+
+  // j megy a sorokon
+  for ( int j = 0; j < magassag; ++j )
+    {
+      // k megy az oszlopokon
+
+      for ( int k = 0; k < szelesseg; ++k )
         {
-			C = {MINX + j * dx , MAXY - i * dy};
 
-            Z = 0;
-            iteracio = 0;
+          // c = (reC, imC) a halo racspontjainak
+          // megfelelo komplex szam
 
-            while(abs(Z) < 2 && iteracio++ < 255)
+          reC = a + k * dx;
+          imC = d - j * dy;
+          std::complex<double> c ( reC, imC );
+
+          std::complex<double> z_n ( 0, 0 );
+          iteracio = 0;
+
+          while ( std::abs ( z_n ) < 4 && iteracio < iteraciosHatar )
             {
-                Zuj = Z*Z+C;
-                Z = Zuj;
+              z_n = z_n * z_n + c;
+
+              ++iteracio;
             }
 
-            tomb[i][j] = 256 - iteracio;
+          kep.set_pixel ( k, j,
+                          png::rgb_pixel ( iteracio%255, (iteracio*iteracio)%255, 0 ) );
         }
+
+      int szazalek = ( double ) j / ( double ) magassag * 100.0;
+      std::cout << "\r" << szazalek << "%" << std::flush;
     }
 
-    GeneratePNG(tomb);
+  kep.write ( argv[1] );
+  std::cout << "\r" << argv[1] << " mentve." << std::endl;
 
-    return 0;
 }
-
 ]]>
-        </programlisting>  
-
-        
-
-        <para>
-            Nézzük meg hogyan néz ki a az értékadása egy komplex számnak az előző feladatban tárgyalt struktúrával: 
-            <screen>
-            C.re = MINX + j * dx;
-            C.im = MAXY - i * dy;
-            </screen>
-            És nézzük meg ezt az <filename>std::complex</filename> osztállyal is:
-            <screen>
-            C = {MINX + j * dx , MAXY - i * dy};
-            </screen>
-        </para>
-        <para>
-            A menta-lila színű halmazhoz használt színezéshez a <command>void GeneratePNG</command>-ben a következő sort így módosítottam:
-            <screen>
-                image[y][x] = png::rgb_pixel(76, tomb[x][y], 146);
-            </screen>
-            Illetve ismét megcseréltem az x és y tengelyt, hogy az y tengelyre legyen szimmetrikus a halmaz, szerintem így kellemesebb a szemnek 
-            a függőleges szimmetria tengely miatt.
-        </para>
+        </programlisting>        
     </section>        
                 
     <section>
-        <title>5.3 Biomorfok</title>
+        <title>Biomorfok</title>
         <para>
         </para>
         <para>
@@ -352,11 +244,6 @@ int main()
             A különbség a <link xlink:href="#bhax-textbook-feladatok-mandelbrot.Mandelbrot">Mandelbrot halmaz</link>
             és a Julia halmazok között az, hogy a komplex iterációban az előbbiben a c változó, utóbbiban pedig állandó. 
             A következő Mandelbrot csipet azt mutatja, hogy a c befutja a vizsgált összes rácspontot.
-        </para>  
-        <para>
-            Tehát ha a Júlia halmazokról beszélünk az azt jelenti, hogy a Mandelbrot-halmaz részhalmazait vesszük. Mivel most mi választjuk a C-t konstansnak végtelen mennyiségű 
-            ilyen halmazt találhatunk, mivel a konstansok száma végtelen. A program komplex iterációját számító részének logikája nem változik, azért kapunk más képet 
-            mert itt a C-t előre megadjuk. 
         </para>       
         <programlisting language="c++">
 <![CDATA[  // j megy a sorokon
@@ -411,13 +298,6 @@ int main()
 ]]>
         </programlisting>                         
         
-        <para>
-            A biomorfok nevüket arról kapták, hogy amikor felfedézték őket rengeteg olyan alakzatot találtak amelyek természetben megtalálhatóak, mint például 
-            a sejtek is ezzel szemben az általam kirajzoltatott kép inkább hasonlít valamilyen szigoróa meghatározott geometriai alakzatra. De a feladatmegoldás végén 
-            mindenképp szemléltetem miről van szó.
-        </para>
-            
-
         <para>
             A bimorfos algoritmus pontos megismeréséhez ezt a cikket javasoljuk: 
             <link xlink:href="https://www.emis.de/journals/TJNSA/includes/files/articles/Vol9_Iss5_2305--2315_Biomorphs_via_modified_iterations.pdf">https://www.emis.de/journals/TJNSA/includes/files/articles/Vol9_Iss5_2305--2315_Biomorphs_via_modified_iterations.pdf</link>.
@@ -494,26 +374,7 @@ main ( int argc, char *argv[] )
         std::cout << "Hasznalat: ./3.1.2 fajlnev szelesseg magassag n a b c d reC imC R" << std::endl;
         return -1;
     }
-    ]]>
-        </programlisting> 
-        <para>
-            Ha a fenti kódcsipetet vizsgáljuk láthatjuk, hogy a program a futtatása során 11 argumentumot vár, ezek között a 
-            9-es a C valós részét jelenti, a 10-s pedig az imaginárius egységes, azaz a programon belül bárhogy választhatunk konstanst, nem fogja 
-            befolyásolni a kirajzolt képet, viszont, ha a program makefile-jában ezeket az argumentumokat módosítjuk az már változtat rajta. Illetve 
-            a makefile módosításával befolyásolhatuk a kirajzolandó kép méretét is. Én az alábbi argumentumokat adtam meg a keletkezett képhez:
-            <screen>
-            @./biomorf bmorf.png 8000 8000 10 -3 3 -3 3 18.5 -15.45 10
-            </screen>
-            melyekből a C-t befolyásoló értékek a következők:
-            <screen>
-            18.5 -15.45 
-            </screen>
-            Illetve fontos megjegyezni, hogy én elég nagy felbontással dolgoztam, ezt a fentebbi sorból a 8000 8000 argumentumok takarják, 
-            tehát az én képem 8000*8000 pixeles felbontásban jelenik meg. 
-        </para>
 
-    <programlisting language="c++">
-<![CDATA[// Verzio: 3.1.3.cpp  
     png::image < png::rgb_pixel > kep ( szelesseg, magassag );
 
     double dx = ( xmax - xmin ) / szelesseg;
@@ -561,233 +422,16 @@ main ( int argc, char *argv[] )
 
 }
 ]]>
-        </programlisting>   
-        <para>
-            Én a program színezését is módosítottam amit itt is hasonlóan lehet megtenni mint az előző programok esetében tehát a 
-            <screen>
-            png::rgb_pixel ( (iteracio*20)%255, (iteracio*40)%255, (iteracio*60)%255 ));
-            </screen>
-            soron kell módsítanunk. Látható, hogy itt bonyolultabban számítjuk ki az iterációnól a színeket de ez majdhogynem mindegy 
-            hogyan tesszük, a program matematikai hátterét nem befolyásolja, csak a készült png-t. Én az alábbi módosításokat tettem meg 
-            a bordó-türkiz árnyalatú kép elkészítéséhez:
-            <screen>
-            png::rgb_pixel ( (iteracio*100)%76, (iteracio*80)%140, (iteracio*80)%122 )); 
-            </screen>
-            Az általam kirajzoltatott biomorf nekem azét tetszett nagyon mivel a középén található bordó háromszög szerű részek mindtha pontosan 
-            60 fokos szögeket zárnának be egymással, és az ábra kinyúló részeiben ugyanez az alakzat található meg csak kisebb méretben és más színekkel.
-            És nézzük meg végre a kirajzolt png képet:
-        </para> 
-
-
-        <mediaobject>
-            <imageobject>
-                <imagedata fileref ="./img/biomorf1.png" format="PNG" scale="5" />
-            </imageobject>
-        </mediaobject>   
-
-        <para>
-            Mint ahogy említettem én nagy felbontással dolgoztam ezért megtehettem, hogy ránagyítok a kép egyes részeire, itt már felfedezhetjük benne a 
-            fraktálok önhasonló természtetét a háromszögszrű alakzatok önismétlődésében. 
-        </para> 
-        <mediaobject>
-            <imageobject>
-                <imagedata fileref ="./img/biomorfnagy.png" format="PNG" scale="40" />
-            </imageobject>
-        </mediaobject>           
+        </programlisting>                                 
+                                          
                                                                             
     </section>                     
 
     <section>
         <title>A Mandelbrot halmaz CUDA megvalósítása</title>
         <para>
-            Ebben a feladatban ugyanazzal a mandelbrot halmaz algoritmussal dolgozunk mint az eddigi feladatokban is viszont itt van egy nagy 
-            különbség az eddigiekhez képest. Itt a feladat lényege hogy a CPU helyett a videókártya számítási kapacitását használjuk ki.
-            Ahhoz hogy ezt meg tudjuk csinálni mindenképp szükségünk van egy Nvidia kártyára mivel a CUDA az Nvidia saját fejlesztése.
         </para>
         <para>
-            A CUDA lényege, hogy az Nvidia kártyák rendelkeznek bizonyos mennyiségű CUDA magokkal, ezekkel 
-            párhuzamosan tudunk egyszerre több számítást is végezni. A CPU is rendelkezik magokkal amellyel párhuzamos számtásokat végezhetünk
-            viszont nem annyival mint egy Nvidia kártya és máshogyan is működnek, egy ilyen program esetében a CPU csak egy magot használ.
-            Ahhoz hogy rávegyük a videókártyánkat a számolásra mindenképp telepítenünk kell az Nvidia Cuda Toolkitet. CUDA illesztőprogramokból 
-            egyébként találhatunk többet is, ugyanis mostanában kezd egyre jobban elterjedni hogy a deep learning miatt, ami nagy számítási 
-            kapacitás igényű folyamat. Véleményem szerint a CUDA a következő évkben eléggé elterjedté válhat ennek köszönhetően. 
-            Viszont most nekünk az alap Nvidia Cuda Toolkit tökéletesen mgfelel.
-        </para>
-        <para>
-            Az elképzelés az lenne hogy a png minden pixelét más szál, más CUDA mag tudja kiszámolni. Ha belegondolunk ez hatalmas újítás ahhoz 
-            képest mintha ugyanezt a CPU-val szeretnénk megvaósítani. Nyílván ez a gyakorlatban nem teljesen így van hogy minden pixelre jut egy 
-            szál, de a CUDA-val ehhez már közelítünk, gondoljunk bele hogy ha egy erősebb GPU-val rendelkezünk amiben közel 1200 cuda mag van
-            valószínűleg a számítás ideje jóval lecsökken a CPU-hoz képest. Azt is érdemes megemlítenünk, hogy hiába van sokmagos, sokszálas erős 
-            processzorunk ha egy folyamat csak 1 szálat fog használni, nem tudjuk kihasználni az egész teljesítményét míg a GPU esetén igen.
-        </para>
-        <para>
-            Én a CUDA-t a Blenderben való Cycles rendermotorral történő rendereléshez szoktam is használni. A Blender Cycles-e is ha nem 
-            rendelkezünk GPU-val processzorból fog számolni. A renderelés során egy ilyen technológia komoly napokat is megspórolhat nekünk,
-            itt azért már érzi az ember, hogy valóban jelentősége van ennek. Egyébként 3D renderelés esetén hasonló dolog történik, mint a 
-            mandelbrot halmaznál, csak ott nem ezt az algoritmust használjuk, hanem a 3D felületet alkotó háromszögek normálvektoraiból lehet 
-            meghatározni egy-egy pixel milyen színű legyen.
-        </para>
-        <para>
-            Nálam megcsinál egy png-t viszont az közel sem a mandelbrot hamlmaz amit kiad. Az a sejtésem hogy a hardware konfigom a baj,
-            én 2 db Nvidia Quadro kártyát használok, ezek kifejezettem 3D grafikai folyamatokhoz vannak fejlesztve, viszont még nem sikerült 
-            SLI hídba kötnöm őket és szerintem vagy ez okozza a gondot vagy az hogy ezek nem mai kártyák és driver probléma van. A program 
-            egyébként a következő értékeket írta ki:
-        </para>
-        <para>
-            <screen>
-                13
-                0.133559 sec
-            </screen>
-        </para>
-
-        <mediaobject>
-            <imageobject>
-                <imagedata fileref ="./img/cuda_fail.png" format="PNG" scale="20" />
-            </imageobject>
-        </mediaobject> 
-
-        <para>
-            Akárhányszor futattom mindig csak hanygafocit rajzol a program. Szerencsére találtam itthon egy másik gépet is (ez egyébként apáé)
-            szóval arra is telepítettük a libpng-t majd futtatuk a programot. Abban a gépben egyébként egy Nvidia GTX 1060-as GPU-t találunk, 
-            megfelő driverekkel és persze a CUDA Toolkit-et is már régen feltelepítettük rá. Csodák csodájára ez szépen kirajzolta a halmazt, 
-            természetesen ugyanazt a programot futtatva ami nekem ezeket a furcsa zajos képeket adta. Nyílvánvaló, hogy valami probléma van az 
-            iterációk számítása során. Amikor elhoztam a gépemet ezekkel a GPU-kkal tudtam, hogy kompromisszumokat kell kötnöm, 10 éves technológiáról 
-            beszélünk. 
-        </para>
-        <para>
-            Megjegyzés: az általam használt videókártyák nem mai darabok, például a Blender a 2.80-as verzójától nem támogatja tehát 
-            ha a Blender rendermotorját szeretném használni akkor a 2.79-es verzióval kell dolgoznom. A 2.8 fölötti verziók esetén 
-            a "User Preferences" fül alatt nálam nem jelenik meg a következő opció:
-        </para>
-        <mediaobject>
-            <imageobject>
-                <imagedata fileref ="./img/cudablend.png" format="PNG" scale="50" />
-            </imageobject>
-        </mediaobject>
-        <para>
-            Viszont csatolom az általam használt kódot, ami Bátfai Norbert munkája, a matematikai háttere ennek a programnak is megegyezik az előzőleg használt
-            programokkal.
-        </para>
-
-        <programlisting language="c++">
-<![CDATA[
-            // Copyright (C) 2019
-// Norbert Batfai, batfai.norbert@inf.unideb.hu
-// Released under GNU GPLv3
-
-#include <png++/image.hpp>
-#include <png++/rgb_pixel.hpp>
-#include <sys/times.h>
-#include <iostream>
-
-#define SIZE 600
-#define ITERATION_LIMIT 32000
-
-// Vegigzongorazza a CUDA a szelesseg x magassag racsot:
-__device__ int mandel(int k, int j)
-{
-	// most eppen a j. sor k. oszlopaban vagyunk
-
-	float a = -2.0, b = .7, c = -1.35, d = 1.35;
-	int width = SIZE, height = SIZE, iterationLimit = ITERATION_LIMIT;
-
-	float dx = (b - a) / width;
-	float dy = (d - c) / height;
-	float reC, imC, reZ, imZ, ujreZ, ujimZ;
-	int iteration = 0;
-
-	reC = a + k * dx;
-	imC = d - j * dy;
-	reZ = 0.0;
-	imZ = 0.0;
-	iteration = 0;
-
-	while (reZ * reZ + imZ * imZ < 4 && iteration < iterationLimit) {
-		ujreZ = reZ * reZ - imZ * imZ + reC;
-		ujimZ = 2 * reZ * imZ + imC;
-		reZ = ujreZ;
-		imZ = ujimZ;
-
-		++iteration;
-
-	}
-	return iteration;
-}
-
-__global__ void mandelkernel(int *buffer)
-{
-
-	int tj = threadIdx.x;
-	int tk = threadIdx.y;
-
-	int j = blockIdx.x * 10 + tj;
-	int k = blockIdx.y * 10 + tk;
-
-	buffer[j + k * SIZE] = mandel(j, k);
-
-}
-
-void cudamandel(int buffer[SIZE][SIZE])
-{
-
-	int *deviceImageBuffer;
-	cudaMalloc((void **)&deviceImageBuffer, SIZE * SIZE * sizeof(int));
-
-	dim3 grid(SIZE / 10, SIZE / 10);
-	dim3 tgrid(10, 10);
-	mandelkernel <<< grid, tgrid >>> (deviceImageBuffer);
-
-	cudaMemcpy(buffer, deviceImageBuffer, SIZE * SIZE * sizeof(int),
-		   cudaMemcpyDeviceToHost);
-	cudaFree(deviceImageBuffer);
-
-}
-
-int main(int argc, char *argv[])
-{
-
-	// Merunk idot (PP 64)
-	clock_t delta = clock();
-	// Merunk idot (PP 66)
-	struct tms tmsbuf1, tmsbuf2;
-	times(&tmsbuf1);
-
-	int buffer[SIZE][SIZE];
-
-	cudamandel(buffer);
-
-	png::image < png::rgb_pixel > image(SIZE, SIZE);
-
-	for (int j = 0; j < SIZE; ++j) {
-		//sor = j;
-		for (int k = 0; k < SIZE; ++k) {
-			image.set_pixel(k, j,
-					png::rgb_pixel(255 -
-						       (255 * buffer[j][k]) /
-						       ITERATION_LIMIT,
-						       255 -
-						       (255 * buffer[j][k]) /
-						       ITERATION_LIMIT,
-						       255 -
-						       (255 * buffer[j][k]) /
-						       ITERATION_LIMIT));
-		}
-	}
-
-	image.write("mandel.png");
-
-	times(&tmsbuf2);
-	std::cout << tmsbuf2.tms_utime - tmsbuf1.tms_utime + tmsbuf2.tms_stime -
-	    tmsbuf1.tms_stime << std::endl;
-
-	delta = clock() - delta;
-	std::cout << (float)delta / CLOCKS_PER_SEC << " sec" << std::endl;
-
-}
-
-        ]]>
-        </programlisting>  
-        <para> 
             Megoldás videó: <link xlink:href="https://youtu.be/gvaqijHlRUs">https://youtu.be/gvaqijHlRUs</link>
         </para>
         <para>
@@ -799,7 +443,7 @@ int main(int argc, char *argv[])
     </section>                     
 
     <section>
-        <title>5.5 Mandelbrot nagyító és utazó C++ nyelven</title>
+        <title>Mandelbrot nagyító és utazó C++ nyelven</title>
         <para>
             Építs GUI-t a Mandelbrot algoritmusra, lehessen egérrel nagyítani egy területet, illetve egy pontot
             egérrel kiválasztva vizualizálja onnan a komplex iteréció bejárta z<subscript>n</subscript> komplex számokat!
@@ -808,41 +452,15 @@ int main(int argc, char *argv[])
             Megoldás videó: <link xlink:href=""></link>
             Illetve <link xlink:href="https://bhaxor.blog.hu/2018/09/02/ismerkedes_a_mandelbrot_halmazzal">https://bhaxor.blog.hu/2018/09/02/ismerkedes_a_mandelbrot_halmazzal</link>.        </para>
         <para>
-            Megoldás forrása: <link xlink:href=""></link>
-        </para>
-        <para>
-            Ebben a feladatban olyan programot kellett készíteni amivel már valódi GUI-t (Graphical User Interface)
-            is tudunk használni. Ahhoz, hogy egy ilyet lehessen készíteni szükségünk van  QT library-re. Ezzel egyszerű 
-            GUI-kat lehet létrehozni, a nagyító utazó programot az egérrel lehet használni, illetve kap saját programablakot.
-            Ez nagyon nagy újítás az eddigi csak terminálban futó programjainkhoz képest, és úgy érezhetjük, hogy 
-            ez egy mérföldkő. Viszont ehhez telepítenünk kell a QT-t.
+            Megoldás forrása: az ötödik előadás <link xlink:href="https://arato.inf.unideb.hu/batfai.norbert/UDPROG-BHAX/Prog1_5.pdf">26-33 fólia</link>, 
+            illetve <link xlink:href="https://sourceforge.net/p/udprog/code/ci/master/tree/source/binom/Batfai-Barki/frak/">https://sourceforge.net/p/udprog/code/ci/master/tree/source/binom/Batfai-Barki/frak/</link>.
         </para>
     </section>                     
                                                                                                                                                                             
     <section>
-        <title>5.6 Mandelbrot nagyító és utazó Java nyelven</title>
+        <title>Mandelbrot nagyító és utazó Java nyelven</title>
         <para>
-            Itt az előző programunk java átíratával van dolgunk. Ez szerencsére nem okozott az előzőhöz hasonló 
-            gondot, csak a jdk 8-at kellett telepítenünk, <screen>sudo apt-get install opnjdk-8-jdk</screen>ez volt a csomagtárolóban 
-            is, tehát egy paranccsal ezt a gondot le is tudtuk. A futtatás sem okozott különösebb problémát.
-            A futtatás így nézett ki: <screen>javac mandelb.java</screen> <screen>java mandelb</screen>
-            A C++ program fordítása és futtatása is elég macerás volt egyébként, ahhoz képest a a java-val 
-            nagyon könnyű dolgunk volt. Az eredményt pedig néhány screenshot formájában csatalom ide. Vicces volt kipróbálni
-            hogy a nagyító meddig nagyít, egy idő után sajnos elértem azt hogy elpixeleződőtt a kép. 
         </para>
-
-        <mediaobject>
-            <imageobject>
-                <imagedata fileref ="./img/java1.png" format="PNG" scale="20" />
-            </imageobject>
-        </mediaobject> 
-
-        <mediaobject>
-            <imageobject>
-                <imagedata fileref ="./img/java2.png" format="PNG" scale="20" />
-            </imageobject>
-        </mediaobject> 
-
         <para>
             Megoldás videó: <link xlink:href="https://youtu.be/Ui3B6IJnssY">https://youtu.be/Ui3B6IJnssY</link>, 4:27-től.
             Illetve <link xlink:href="https://bhaxor.blog.hu/2018/09/02/ismerkedes_a_mandelbrot_halmazzal">https://bhaxor.blog.hu/2018/09/02/ismerkedes_a_mandelbrot_halmazzal</link>.
@@ -851,18 +469,18 @@ int main(int argc, char *argv[])
             Megoldás forrása: <link xlink:href="https://www.tankonyvtar.hu/hu/tartalom/tkt/javat-tanitok-javat/apbs02.html#id570518">https://www.tankonyvtar.hu/hu/tartalom/tkt/javat-tanitok-javat/apbs02.html#id570518</link>
         </para>
     </section>
-
     <section>
-        <title>5.7 Steve felszalad a láváig</title>
+        <title>Vörös Pipacs Pokol/fel a láváig és vissza</title>
         <para>
-            Ebben a programban Steve első dolga, hogy elszadjon a láváig, ezt move, jumpmove párosokkal teszi 
-            egy while cikluson belül amineka kilépési feltételében szerepel, az általa érzékelt kockákból 
-            ha az előtte és fölötte előtte lévő kockákban "flowing_lava" vgay "lava szerepel". Ha ez megtörténik 
-            Steve leszalad és elkezdi csigában gyűjteni a virágokat. A program lefutása az alábbi videóban látható.
+            Megoldás videó: <link xlink:href="https://youtu.be/I6n8acZoyoo">https://youtu.be/I6n8acZoyoo</link>      
         </para>
         <para>
-            Megoldás videó: <link xlink:href="https://www.youtube.com/watch?v=zO6cNp8L4-Q">https://www.youtube.com/watch?v=zO6cNp8L4-Q</link>
+            Megoldás forrása: <link xlink:href="https://github.com/nbatfai/RedFlowerHell">https://github.com/nbatfai/RedFlowerHell</link>               
         </para>
-    </section>
+        <para>
+            Tanulságok, tapasztalatok, magyarázat... ezt kell az olvasónak kidolgoznia, mint labor- vagy otthoni mérési feladatot!
+            Ha mi már megtettük, akkor használd azt, dolgozd fel, javítsd, adj hozzá értéket!
+        </para>            
+    </section>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
 </chapter>                

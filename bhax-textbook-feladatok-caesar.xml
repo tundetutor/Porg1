@@ -6,7 +6,7 @@
         </keywordset>
     </info>
     <section>
-        <title>4.1 Alsó háromszögmátrix</title>
+        <title><type>double **</type> háromszögmátrix</title>
         <para>
             Írj egy olyan <function>malloc</function> és <function>free</function>
             párost használó C programot, amely helyet foglal
@@ -17,31 +17,9 @@
             <link xlink:href="https://youtu.be/RKbX5-EWpzA">https://youtu.be/RKbX5-EWpzA</link>.
         </para>
         <para>
-          Először is mik azok a háromszögmátrixok? A háromszögmátrixok speciális kvadratikus mátrixok, álatlában 2 fajta háromszögmátrixot különböztetünk meg, van alsó pés felső
-          háromszögmátrix. A felső háromszögmátrix jellemzője hogy a főátló alatt csupa 0 érték található, míg az alsó
-          háromszögmátrix ennek fordítottja, annál a főátló fölött található csupa 0 érték.
-        </para>
-        <para>
-          A példaprogram egy 5x5-ös alsóháromszögmátrix-ot ábrázol. A 8. sorban táluink egy if függvényt, ez egy hibakeresés és helyfoglalás egyben. 
-          A feltételében egy malloc-kal helyet foglalunk a mátrixunknak illetve megvizsgáljuk, hogy azok száma 0.e mert amennyiben a feltétel igaz 
-          nem beszélehtünk semmiképp háromszögmátrixról, és egy return -1, gibát kapunk vissza. Tehát ha pl a "nr" változó ami meghatározza hányszor hanyas lesz 
-          a mátrix, 0 akkor hibát ad vissza a program. Gyakori hogy a helyfoglalást egy if-en belül oldják meg, pint a hibakezelés miatt. Ezután egy preorder
-          for cikluson beül helyet foglalunk a mátrixunk elemeinek ismét malloc-ot használva. A for cikluson belül pedig újabb hibakezeléssel találkozunk.
-          A size ugye a mátrix beli elemek számát jelöli, ez sem lehet nulla, ha mégés az akkor return -1 és hibát ad vissza a program. Ha a program idáig 
-          helyesen lefutott és a helyfoglalással minden rendben volt, ezután 2 for cikluson belül feltölti a mátrixot. Az egyik for ciklus a mátrix sorain halad végig 
-          a másik pedig annak oszlopain. Alapból egy képlet segítségével az értékes elemek értéke
-          az a szám ahanyadik értékes elemről van szó. Itt megjegyezném hogy az első értékes elem egy 1 mivel a C sok más programnyelvhez haonlóan 0-tól
-          számol. Ezután ismét az előző 2 for ciklust felhasznáva a program kíratja azok elemeit. 
-        </para>
-        <para>
-          A program egyébként 2 db mátrixot ír ki a képernyőnkre. A második mátrixban bizonyos elemeknek konkrét értéket adva (42, 43, 44, 45). Ezt az értékadást minden
-          elem esetében más módon teszi meg ezzel példákat adva a mutatók helyes használatára, ugyanis egy mátrix beli elemre több módon is hivatkozhatunk. Az első és egyben
-          legegyszerűbb ha konkrétan megmondjuk mely elemről van szó "tm[s][o]". Ha a mutatókat is ki szeretnénk használni akkor több megoldás is helyes. Lehet mutatni a 
-          mátrixon blül csak sorra vagy oszlopra és a másik értéket konkrétan megadni vagy lejóhet a sorokhoz és az oszlopokoz is mutatót használni.
-          Ezután ismét 2 for cilus segítségével kíratjuk magát a mátrixot.
-        </para>
-        <para>
-          A program utolsófontos része pedig a mátrixnak és annak elemeinek lefoglalt hely felszabadítása, ezt a free() függnyénnyel tehetjük meg. 
+            Megoldás forrása: <link xlink:href="Caesar/tm.c">
+                <filename>bhax/thematic_tutorials/bhax_textbook_IgyNeveldaProgramozod/Caesar/tm.c</filename>
+            </link> 
         </para>
         <programlisting language="c"><![CDATA[#include <stdio.h>
 #include <stdlib.h>
@@ -108,240 +86,53 @@ main ()
             </mediaobject>
         </figure>                             
         <para>
-            Tanulságok, tapasztalatok, magyarázat...
+            Tanulságok, tapasztalatok, magyarázat... ezt kell az olvasónak kidolgoznia, mint labor- vagy otthoni mérési feladatot!
+            Ha mi már megtettük, akkor használd azt, dolgozd fel, javítsd, adj hozzá értéket!
         </para>            
     </section>        
     <section>
-        <title>4.2 C EXOR titkosító</title>
+        <title>C EXOR titkosító</title>
         <para>
             Írj egy EXOR titkosítót C-ben!
         </para>
         <para>
             Megoldás forrása: egy részletes feldolgozása az 
-            <link xlink:href="https://progpater.blog.hu/2011/02/15/felvetelt_hirdet_a_cia">e.c és t.c forrásoknak</link>.               
+            <link xlink:href="https://progpater.blog.hu/2011/02/15/felvetelt_hirdet_a_cia">posztban</link>, lásd az e.c forrást.               
         </para>
         <para>
             Tanulságok, tapasztalatok, magyarázat... ezt kell az olvasónak kidolgoznia, mint labor- vagy otthoni mérési feladatot!
             Ha mi már megtettük, akkor használd azt, dolgozd fel, javítsd, adj hozzá értéket!
         </para>
-        <para>
-         Az EXOR titkosító lényege hogy megadunk egy valahánybetűs kulcsot és egy szöveget. ezeket összeXOR-ozzuk. Ekkor az eredet szövegből egy 
-         furcsa bitsorozatot kapunk, a szövegünk titkosítva is van. Ha ezt a titkosított szöveget ismételten összeExorozzuk a kulccsal, akkor 
-         visszakapjuk az erdeti szövegünket. Hogyan lehetséges ez? Az XOR, azaz a kizáró vagy logikai művelet alkalmas pl karakterek bitenkénti
-         cseréjére is, itt gyakorlatilag vaz történik, hogy a szöveg bitjeit "összemossa" a kulcséval és egy felismerhetetlen bitsorozatot kapunk.
-         Nyílván amikor ezt visszafele csináljuk ugyanaz történik és megkapjuk a tiszta szövegünket. Erről a javanál írok részletesebben.
-        </para>
     </section>        
     <section>
-        <title>4.3 Java EXOR titkosító</title>
+        <title>Java EXOR titkosító</title>
         <para>
             Írj egy EXOR titkosítót Java-ban!
-        </para>
-        <para>
-            Megoldás videó:
         </para>
         <para>
             Megoldás forrása: <link xlink:href="https://www.tankonyvtar.hu/hu/tartalom/tkt/javat-tanitok-javat/ch01.html#exor_titkosito">https://www.tankonyvtar.hu/hu/tartalom/tkt/javat-tanitok-javat/ch01.html#exor_titkosito</link>               
         </para>
         <para>
-            A java-ban megírt program rövid magyarázata:
-        </para>
-        <para>
-           Először is, a programnak szüksége van a kulcsra, amit egy stringben tárol el illetve kell egy 256 byte-os buffer a bemenetünknek. 
-           Ezek után egy while ciklus segítségével addig olvassa a bemenetet amíg az van, majd ezen belül egy for ciklust találunk. A for ciklus 
-           annyiszor hajtódik végre ahány beolvasott byte-unk, azaz karakterünk van, ezena  for cikluson belül pedig a bifferbe beolvasott szövegből
-           byte-onként összeEXOR-ozza a bufferben lévő dolgokat a kulcs egyik elemével.
-        </para>
-      <programlisting language="java">
-        <![CDATA[
-        import java.io.InputStream;
-import java.io.OutputStream;
-
-public class main
-{
-    public static void encode (String key, InputStream in, OutputStream out) throws java.io.IOException
-    {
-        byte[] kulcs = key.getBytes(); 
-        byte[] buffer = new byte[256]; 
-        int kulcsIndex = 0;
-        int readBytes = 0;
-
-        while((readBytes = in.read(buffer)) != -1) 
-        {
-            for(int i=0; i<readBytes; i++)
-            {
-                buffer[i] = (byte)(buffer[i] ^ kulcs[kulcsIndex]); //itt csinálja az összeEXOR-ozást
-                kulcsIndex = (kulcsIndex + 1) % key.length();
-            }
-
-            out.write(inputBuffer, 0, readBytes); 
-        }
-    }
-
-    public static main (String[] args)
-    {
-        if(args[0] != "") 
-        {
-            try
-            {
-                encode(args[0], System.in, System.out); //
-            }
-            catch(java.io.IOException e) 
-            {
-                e.printStackTrace();
-            }
-        }
-        else 
-        {
-            System.out.println("Please provide a key!");
-            System.out.println("java main <key>");
-        }
-
-    }
-}
-        ]]>
-      </programlisting>
+            Tanulságok, tapasztalatok, magyarázat... ezt kell az olvasónak kidolgoznia, mint labor- vagy otthoni mérési feladatot!
+            Ha mi már megtettük, akkor használd azt, dolgozd fel, javítsd, adj hozzá értéket!
+        </para>            
     </section>        
     <section xml:id="bhax-textbook-feladatok-caesar.EXOR-toro">
-        <title>4.4 C EXOR törő</title>
+        <title>C EXOR törő</title>
         <para>
             Írj egy olyan C programot, amely megtöri az első feladatban előállított titkos szövegeket!
         </para>
         <para>
-            Megoldás videó:
+            Megoldás forrása: egy részletes feldolgozása az 
+            <link xlink:href="https://progpater.blog.hu/2011/02/15/felvetelt_hirdet_a_cia">posztban</link>, lásd az t.c forrást.               
         </para>
         <para>
-            Megoldás forrása:                
-        </para>
-        <para>
-            Adott volt az előző feladatban a t.c program ami arra való hogy ugye XOR titkosított szövegeket törjünk vele. 
-            Labor feladat volt ezt kivitelezni is, amit sikerült is megoldanom pár esetben. Nagyon felbosszantott hogy nem tudtam
-            mindenki szövegét törni majd utána jártam a dolognak hogy mi volt a baj...
-        </para>
-        <para>
-            Előzmények: Az XOR törő program alapvetőleg a brute force technikát alkalmazza, azaz próbáljunk ki minden lehetséges kulcs kombinációt. 
-            Nyílván ez nem működhet mindenféle jelszótörésre meg egyéb haxorkodáshoz mivel ez az egyik leggyakoribb törési mechanizmus és gyakran pl a
-            nemes egyszerűséggel ettől le vannak véve úgy hogy nem próbálkozhatunk mondjuk 5-nél több alkalommal. Na de itt nem eza helyzet szóval törjük
-            meg azt a titkosítást... Alapból a program 8 karakteres kulcsokat tud törni, akiknek a szövegét én kinéztem nekik zömében 4 karakterből álló
-            kulcsuk volt. Oké. A következő lépés az volt hogy a segítségként megadott karaktereket egy tömbbe vettem hogy ne kelljen a teljes ABC-n 
-            végészaladnia a programnak, illetve a for ciklusokból is kiszedtem 4 db-ot. Leteszteltem a saját szövegemen, a program készen állt a törésre.
-            Ekkor meglepetésemre sorra nem törte a mások által titkoított szövegeket. Kérdezősködtem és a csoporttársaim nagyrésze ugyanígy járt.
-            De ami igazán érdekes volt, hogy az XOR törőink ugyanazokat a szövegeket törték és ugyanazokat nem. Végül utána jártunk és az volt a baj
-            hogy a törő a magyar szövegeket tudja hatékonyan törni így meg kellett elégedni azzal hogy azt a pár szöveget helyesen és viszonylag gyorsan
-            törte a program.
-        </para>
-        <para>
-            Itt pedig az az XOR törő van mellékelve ami 4 karakteres kulcsot tör, amely a g, s, e és p karakterekből áll:
-        </para>
-        <programlisting language="c"><![CDATA[#define MAX_TITKOS 4096
-            #define OLVASAS_BUFFER 256
-            #define KULCS_MERET 4
-            #define _GNU_SOURCE
-            
-            #include <stdio.h>
-            #include <unistd.h>
-            #include <string.h>
-            
-            double
-            atlagos_szohossz (const char *titkos, int titkos_meret)
-            {
-              int sz = 0;
-              for (int i = 0; i < titkos_meret; ++i)
-                if (titkos[i] == ' ')
-                  ++sz;
-            
-              return (double) titkos_meret / sz;
-            }
-            
-            int
-            tiszta_lehet (const char *titkos, int titkos_meret)
-            {
-              // a tiszta szoveg valszeg tartalmazza a gyakori magyar szavakat
-              // illetve az átlagos szóhossz vizsgálatával csökkentjük a
-              // potenciális töréseket
-            
-              double szohossz = atlagos_szohossz (titkos, titkos_meret);
-            
-              return szohossz > 6.0 && szohossz < 9.0
-                && strcasestr (titkos, "hogy") && strcasestr (titkos, "nem")
-                && strcasestr (titkos, "az") && strcasestr (titkos, "ha");
-            
-            }
-            
-            void
-            exor (const char kulcs[], int kulcs_meret, char titkos[], int titkos_meret)
-            {
-            
-              int kulcs_index = 0;
-            
-              for (int i = 0; i < titkos_meret; ++i)
-                {
-            
-                  titkos[i] = titkos[i] ^ kulcs[kulcs_index];
-                  kulcs_index = (kulcs_index + 1) % kulcs_meret;
-            
-                }
-            
-            }
-            
-            int
-            exor_tores (const char kulcs[], int kulcs_meret, char titkos[],
-                    int titkos_meret)
-            {
-            
-              exor (kulcs, kulcs_meret, titkos, titkos_meret);
-            
-              return tiszta_lehet (titkos, titkos_meret);
-            
-            }
-            
-            int
-            main (void)
-            {
-            
-              char kulcs[KULCS_MERET];
-              char titkos[MAX_TITKOS];
-              char betuk[5] = {'g','s','e','p', '\0'};
-              char *p = titkos;
-              int olvasott_bajtok;
-            
-              // titkos fajt berantasa
-              while ((olvasott_bajtok =
-                  read (0, (void *) p,
-                    (p - titkos + OLVASAS_BUFFER <
-                     MAX_TITKOS) ? OLVASAS_BUFFER : titkos + MAX_TITKOS - p)))
-                p += olvasott_bajtok;
-            
-              // maradek hely nullazasa a titkos bufferben  
-              for (int i = 0; i < MAX_TITKOS - (p - titkos); ++i)
-                titkos[p - titkos + i] = '\0';
-            
-              // osszes kulcs eloallitasa
-              for (int ii = 0; ii <= 4; ++ii)
-                for (int ji = 0; ji <= 4; ++ji)
-                  for (int ki = 0; ki <= 4; ++ki)
-                    for (int pi = 0; pi <= 4; ++pi)
-                      {
-                        kulcs[0] = betuk[ii];
-                        kulcs[1] = betuk[ji];
-                        kulcs[2] = betuk[ki];
-                        kulcs[3] = betuk[pi];
-            
-                        if (exor_tores (kulcs, KULCS_MERET, titkos, p - titkos))
-                          printf
-                              ("Kulcs: [%c%c%c%c]\nTiszta szoveg: [%s]\n",
-                              ii, ji, ki, pi, titkos);
-            
-                        // ujra EXOR-ozunk, igy nem kell egy masodik buffer  
-                        exor (kulcs, KULCS_MERET, titkos, p - titkos);
-                      }
-            
-              return 0;
-            }]]></programlisting>
-
+            Tanulságok, tapasztalatok, magyarázat... ezt kell az olvasónak kidolgoznia, mint labor- vagy otthoni mérési feladatot!
+            Ha mi már megtettük, akkor használd azt, dolgozd fel, javítsd, adj hozzá értéket!
+        </para>            
     </section>        
     <section>
-        <title>4.5 Neurális OR, AND és EXOR kapu</title>
+        <title>Neurális OR, AND és EXOR kapu</title>
         <para>
             R
         </para>
@@ -352,100 +143,17 @@ public class main
             Megoldás forrása: <link xlink:href="https://gitlab.com/nbatfai/bhax/tree/master/attention_raising/NN_R">https://gitlab.com/nbatfai/bhax/tree/master/attention_raising/NN_R</link>               
         </para>
         <para>
-          Tanulságok, tapasztalatok, magyarázat...
-        </para>
-        <para>
-        Egy nagyon jó szemléltető videó: <link xlink:href="https://www.youtube.com/watch?v=qv6UVOQ0F44">https://www.youtube.com/watch?v=qv6UVOQ0F44</link>
-        </para>
-        <para>
-             A neurális háló egy nagyon érdekes de nem könnyű téma. Itt az első bekezdésben röviden bemutatnám miről is van szó.
-             Egy neurális háló 2 főbb dologból áll: neuronokból és rétegekből. A neuronok lényege hogy a kapott adatokat továbbítani vagy 
-             módosítani legyenek képesek. A neuronoknak van egy bemeneti oldala, itt a bejövő adatokat szummázza illetve van egy kimeneti oldala. 
-             A valódi idegsjtekben a "bemeneti" adatok axonokon keresztül érkeznek, az axonok által összekötött idegsejtek pedig a neuron hálózatot
-             alakítják ki, ehhez hasonlóan működnek a programozásbeli neurális halózatok is, ezeket gráffal tudjuk szemlélltetni. 
-             A neuronok tehát adatokat kapnak és azokat továbbítják.  Ez a kapcsolat alakítja ki a rétegeket. 3 fő rétegből szoktak állni a neurális 
-             hálózatok, ezek a bemeneti, a rejtett és a kimeneti réteg. Rejtett rétegből lehet több, vagy akár egy sem, minél több rejtett rétegből áll
-             egy hálózat annál komplexebb feladatokat képes végrehajtani. A rejtett réteget lehet műveleti rétegnek is nevezni, ahogy ezt sejteni lehet 
-             itt a kapott adatokkal a neuronok műveleteket végeznek, ezek  leggyakrabban a legalapabb logikai műveletek, azaz OR, ANd, XOR stb. 
-             Léteznek úgy nevezett deep learning neural network-ök, ezeknek a lényege az hogy a neurális hálózatunkhoz, egy rewar systemes. jutalmazási
-             rendszert adunk, ezek a hálózatok sok lefutás, generáción keresztül tanulnak, a folyamatosan érkező adatokat feldolgozzák. Minél pontosabb
-             reward systemet alakítunk ki annál hatékonyabb lesz a tanulási folyamata.
-        </para>
-        <para>
-            Na de térjünk is rá a neurális OR, AND és XOR kapukra. Ezekhez 2 db input szükséges, az egyik lgyen A a másik pedig B. Az input 
-            módosítás nélül adja tovább az adatokat. Az OR és az And esetén nincs rejtett rétegünk, ezek elemi logikai műveletek. Ahhoz hogy a 
-            neurális hálónkat ezek elvégzésére megtanítsuk egfy data.frame táblára van szükségünk, iletve a neuralnet() függvényre. 
-            Ez azt jelenti, hogy a data-frame-ben megadjuk neki az inputokat és a művelet elvégzése ztáni eredményt, pédát mutatunk be.
-        </para>
-        <para>
-            Az AND és az OR műveleteket, rejtett réteg bélkül is el tudja végezni, akár a kettőt is egyszerre, de az XOR, azaz a kizáró vagy esetén más
-            a helyzet. Ha ítéletlogikai formulaként felírjuk láthatjuk hogy egy sokkal összetettebb formuláról van szó, míg at AND egy elemi konjunkciónak
-            felel meg az OR pedig ugye elemi diszjunkciónak. Az XOR-hoz 3 rejtett rétegre lesz szükségünk.
-        </para>
-        <programlisting language='r'>
-        <![CDATA[
-library(neuralnet)
-
-a1    <- c(0,1,0,1)
-a2    <- c(0,0,1,1)
-OR    <- c(0,1,1,1)
-
-or.data <- data.frame(a1, a2, OR)
-
-nn.or <- neuralnet(OR~a1+a2, or.data, hidden=0, linear.output=FALSE, stepmax = 1e+07, threshold = 0.000001)
-
-plot(nn.or)
-
-compute(nn.or, or.data[,1:2])
-
-
-a1    <- c(0,1,0,1)
-a2    <- c(0,0,1,1)
-OR    <- c(0,1,1,1)
-AND   <- c(0,0,0,1)
-
-orand.data <- data.frame(a1, a2, OR, AND)
-
-nn.orand <- neuralnet(OR+AND~a1+a2, orand.data, hidden=0, linear.output=FALSE, stepmax = 1e+07, threshold = 0.000001)
-
-plot(nn.orand)
-
-compute(nn.orand, orand.data[,1:2])
-
-
-
-a1      <- c(0,1,0,1)
-a2      <- c(0,0,1,1)
-EXOR    <- c(0,1,1,0)
-
-exor.data <- data.frame(a1, a2, EXOR)
-
-nn.exor <- neuralnet(EXOR~a1+a2, exor.data, hidden=0, linear.output=FALSE, stepmax = 1e+07, threshold = 0.000001)
-
-plot(nn.exor)
-
-compute(nn.exor, exor.data[,1:2])
-
-
-
-a1      <- c(0,1,0,1)
-a2      <- c(0,0,1,1)
-EXOR    <- c(0,1,1,0)
-
-exor.data <- data.frame(a1, a2, EXOR)
-
-nn.exor <- neuralnet(EXOR~a1+a2, exor.data, hidden=c(6, 4, 6), linear.output=FALSE, stepmax = 1e+07, threshold = 0.000001)
-
-plot(nn.exor)
-
-compute(nn.exor, exor.data[,1:2])
-]]>
-        </programlisting>
-    </section>
+            Tanulságok, tapasztalatok, magyarázat... ezt kell az olvasónak kidolgoznia, mint labor- vagy otthoni mérési feladatot!
+            Ha mi már megtettük, akkor használd azt, dolgozd fel, javítsd, adj hozzá értéket!
+        </para>            
+    </section>        
     <section>
-        <title>4.6 Hiba-visszaterjesztéses perceptron</title>
+        <title>Hiba-visszaterjesztéses perceptron</title>
         <para>
-            C++
+            Fontos, hogy ebben a feladatban még nem 
+            a <link xlink:href="https://prezi.com/0u8ncvvoabcr/no-programming-programming/">neurális paradigma</link> megismerése 
+            a cél, hanem a többrétegű perceptron memóriakezelése (lásd majd a változó argumentumszámú
+            konstruktorban a <type>double ***</type> szerkezetet). 
         </para>
         <para>
             Megoldás videó: <link xlink:href="https://youtu.be/XpBnR31BRJY">https://youtu.be/XpBnR31BRJY</link>
@@ -454,71 +162,23 @@ compute(nn.exor, exor.data[,1:2])
             Megoldás forrása: <link xlink:href="https://github.com/nbatfai/nahshon/blob/master/ql.hpp#L64">https://github.com/nbatfai/nahshon/blob/master/ql.hpp#L64</link>               
         </para>
         <para>
-            Tanulságok, tapasztalatok, magyarázat...
-        </para>
-        <para>
-         Ez a program egy elég érdekes program. Én elsősorban a megoldás videóban található programról szeretnék írni. 
-         A program a mandelbrot halmazról kirazoltatott png képpel dolgozik. Ebben a png képben fekte és fehér pixelek vannak, 
-         itt fontos megjegyezni hogy a fehér pixelek tartalmaznak piros színt míg a feketék nem. A program elején meg van hívva az mlp.hpp.
-         Az mlp kibontva MUlti Layer Perceptron, ez adja a programhoz a 3 rétegű neurális hálót, ettől lesz képes tanulni.
-         A 9. sorban van deklaráva a kép mérete azaz size, ami a szélesség*magasság, azaz a tartalmazott pixelek száma.
-         A program további részészében a 13. sorig a png-nek való helyfoglalás történik, a képet mint egy mátrixot kell elképzelünk,
-         ugye van szélessége (oszlopok) és magassága (sorok). Ezután létrehoz egy p, Perceptron típúsú mutaót, ait az mlp beli osztály
-         miatt tehet meg, illetve egy double típúsút, ami az image, azaz maga a png kép mint tömb, elemeire, tehát a pixelekre mutat.
-         Ezt követően a dupla forcilusban feltölti az image mátrixot a pixelekkel, hasonló módon mint a háromszögmátrix esetében
-         és megvizsgálja a piros színű pixeleket. A program végén a foglalt helyeket szabaddá tesszük. 
-        </para>
-        <para>
-         Ezt a programot még sokat kell tanulmányozno de nagyon rajta vagyok az ügyön, a neurális háló működéséről pedig az előző feladatban
-         írtam tehát ne,m szeretném ismételni magam.
-        </para>
-
-       
-       <programlisting language="c">
-        <![CDATA[ 
-        #include <iostream>
-        #include "mlp.hpp"
-        #include <png++/png.hpp>
-        
-        int main(int argc, char ** argv)
-        {
-            png::image <png::rgb_pixel> png_image(argv[1])
-            
-            int size = png_image.get_width() * png_image.get_height();
-            
-            Perceptron* p = new perceptron (3, size, 256, 1);
-            
-            double* image = new double[size]
-            
-            for(int i {0}, i < png_image.get_width(), ++i)
-              for(int j {0}, j < png_image.get_heighth(), ++j)
-                image[i*png_image.get_width()+j] = png_image[i][j].red;
-                
-            double value = (*p)(image);
-            
-            std::cout << value << std::endl;
-            
-            delete p;
-            delete [] image;
-        }
-        ]]>
-       </programlisting>
-    
-          
-    </section>
+            Tanulságok, tapasztalatok, magyarázat... ezt kell az olvasónak kidolgoznia, mint labor- vagy otthoni mérési feladatot!
+            Ha mi már megtettük, akkor használd azt, dolgozd fel, javítsd, adj hozzá értéket!
+        </para>            
+    </section>        
     <section>
-      <title>4.7 Steve látása</title>
-      <para>
-        Megoldás videó: <link xlink:href="https://www.youtube.com/watch?v=DX8dI04rWtk">https://www.youtube.com/watch?v=DX8dI04rWtk</link>
-      </para>
-      <para>
-        Steve 2 módon láthat. Az egyik a lineOfSight, azaz azt a blokkot látja amin a kereszt van. A másik mód pedig egy körülötte lévő cuboidot használ.
-        Ezt az xml módosításával kiterjeszthetjük az alap 3x3x3-masról akár 7x7x7-esre is. Itt fontos arra ügyelni hogy mely általa érzékelt blokkokkal 
-        szeretnénk dolgozni, ugyanis ezek egy tömbben vannak eltárolva és meg ios vannak számozva. Ezeknek a cuboidoknak a közepén van mindig Steve. 
-        Ezekre a tömbbeli elemekre tudunk hivatkozni tehát ki tudjuk íratni a tartalmukat, vagy egy if függvénnyel külön tudunk kiíratást csinálni
-        hogy mondja el Steve hol és mit lát.
-      </para>
-    </section>
+        <title>Vörös Pipacs Pokol/írd ki, mit lát Steve</title>
+        <para>
+            Megoldás videó: <link xlink:href="https://youtu.be/-GX8dzGqTdM">https://youtu.be/-GX8dzGqTdM</link>      
+        </para>
+        <para>
+            Megoldás forrása: <link xlink:href="https://github.com/nbatfai/RedFlowerHell">https://github.com/nbatfai/RedFlowerHell</link>               
+        </para>
+        <para>
+            Tanulságok, tapasztalatok, magyarázat... ezt kell az olvasónak kidolgoznia, mint labor- vagy otthoni mérési feladatot!
+            Ha mi már megtettük, akkor használd azt, dolgozd fel, javítsd, adj hozzá értéket!
+        </para>            
+    </section>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
         
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
 </chapter>                

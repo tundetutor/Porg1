@@ -6,152 +6,58 @@
         </keywordset>
     </info>
     <section>
-        <title>3.1 Decimálisból unárisba átváltó Turing gép</title>
+        <title>Decimálisból unárisba átváltó Turing gép</title>
         <para>
             Állapotátmenet gráfjával megadva írd meg ezt a gépet!
         </para>
         <para>
-            Ebben a feladatban decimálisból unáris számrendszerbe váltó Turing gépről van szó, ahhoz hogy tudjuk mi ez
-            tudnunk kell melyek a decimális illetve unáris számrendszerek. A decimális a jól ismert tizes számrendszer, 
-            melyben 10 számjegyből (0-9) tudjuk leképezni a számokat. Általáos iskolából emlékezhetünk arra, hogy az ilyen
-            tizes számrendszerbeli számokat oly módon irtuk fel hogy milyen számok vannak egyes helyiértékeken, pl.: egyes,
-            tizes, százas, ezres. stb. Az adott helyiértéken állü számjegyet meg kell szoroznunk a helyiértékkel, majd ezekből 
-            összeget képzünk. Tehát pl.: a 321 = 3*100 + 2*10 + 1*1.
-            Az egyes számrendszer olyan számrendszer melyben a számokat 1 számjeggyel az 1-essel
-            tudjuk leirni mégpedig oly módon, hogy amennyi maga a szám egymás után annyi egyest irunk pl.: 3 = 111.
-            A gép a két számrendszer között úgy vált át hogy a decimális számból addig von ki 1-eseket mig az 0 nem lesz.
+            Megoldás forrása: az első előadás <link xlink:href="https://arato.inf.unideb.hu/batfai.norbert/UDPROG-BHAX/Prog1_1.pdf">27 fólia</link>.               
         </para>
         <para>
-            Ha ezt az átváltást program segitségével szeretnénk lemodellezni megoldás lehet ha mondjuk egy while ciklust használnunk
-            amelynek kilépési feltétele hogy a decimális számuk 0 legyen. A ciklus törzsében minden lefutáskor levonunk a decimális
-            számból egyet és egy 1-es számjegyet hozzáfüzünk pl egy (a program idnitásakor még üres) txt állományhoz. Ekkor a ciklus 
-            végére a txt állományban keletkezett adat az eredeti decimális számunk unáris alakjának felel meg                
+            Tanulságok, tapasztalatok, magyarázat... ezt kell az olvasónak kidolgoznia, mint labor- vagy otthoni mérési feladatot!
+            Ha mi már megtettük, akkor használd azt, dolgozd fel, javítsd, adj hozzá értéket!
         </para>
-        
-        <programlisting language="c"><![CDATA[ 
-            ]]>
-        </programlisting>
-        
     </section>        
         
-
     <section>
-        <title>3.2 Az a<superscript>n</superscript>b<superscript>n</superscript>c<superscript>n</superscript> nyelv nem környezetfüggetlen</title>
+        <title>Az a<superscript>n</superscript>b<superscript>n</superscript>c<superscript>n</superscript> nyelv nem környezetfüggetlen</title>
         <para>
             Mutass be legalább két környezetfüggő generatív grammatikát, amely ezt a nyelvet generálja!
         </para>
         <para>
-            Megoldás videó:
+            Megoldás forrása: az első előadás <link xlink:href="https://arato.inf.unideb.hu/batfai.norbert/UDPROG-BHAX/Prog1_1.pdf">30-32 fólia</link>.               
         </para>
         <para>
-            A generativ grammatika olyan nyeltani szabályrendszert jelent melyben véges számú szóból és véges szóból és 
-            véges számú szabályból végtelen számú mondatot lehet alkotni.                
-        </para>
-        <para>
-            Sok olyan jelenség van am it nem lehet környezetfüggetlen nyelveken leirni, ilyen pl.:a természetes nyelvek, a 
-            primszámok halmaza.
-            A környezetfüggő nyelvek zártak a halmazmüveletekre az unió müveletet leszámitva.
-            S (S → aXbc)
-            aXbc (Xb → bX)
-            abXc (Xc → Ybcc)
-            abYbcc (bY → Yb)
-            aYbbcc (aY → aaX)
-            aaXbbcc (Xb → bX)
-            aabXbcc (Xb → bX)
-            aabbXcc (Xc → Ybcc)
-            aabbYbccc (bY → Yb)
-            aabYbbccc (bY → Yb)
-            aaYbbbccc (aY → aa)
-            aaabbbccc 
-        </para>
-        <para>
-            A (A → aAB)
-            aAB ( A → aAB)
-            aaABB ( A → aAB)
-            aaaABBB ( A → aC)
-            aaaaCBBB (CB → bCc)
-            aaaabCcBB (cB → Bc)
-            aaaabCBcB (cB → Bc)
-            aaaabCBBc (CB → bCc)
-            aaaabbCcBc (cB → Bc)
-            aaaabbCBcc (CB → bCc)
-            aaaabbbCccc (C → bc)
-            aaaabbbbcccc
+            Tanulságok, tapasztalatok, magyarázat... ezt kell az olvasónak kidolgoznia, mint labor- vagy otthoni mérési feladatot!
+            Ha mi már megtettük, akkor használd azt, dolgozd fel, javítsd, adj hozzá értéket!
         </para>
     </section>        
                 
     <section>
-        <title>3.3 Hivatkozási nyelv</title>
+        <title>Hivatkozási nyelv</title>
         <para>
             A <citation>KERNIGHANRITCHIE</citation> könyv C referencia-kézikönyv/Utasítások melléklete alapján definiáld 
             BNF-ben a C utasítás fogalmát!
             Majd mutass be olyan kódcsipeteket, amelyek adott szabvánnyal nem fordulnak (például C89), mással (például C99) igen.
         </para>
         <para>
-            A BNF környezetfüggetlen szintaxisokat leiró szintaxis.  
+            Megoldás forrása: az első előadás <link xlink:href="https://arato.inf.unideb.hu/batfai.norbert/UDPROG-BHAX/Prog1_1.pdf">63-65 fólia</link>.               
         </para>
         <para>
-            A C nyelvi utasitás fogalmának szintaktikai definiciója BNF sintaxisban:
+            Tanulságok, tapasztalatok, magyarázat... ezt kell az olvasónak kidolgoznia, mint labor- vagy otthoni mérési feladatot!
+            Ha mi már megtettük, akkor használd azt, dolgozd fel, javítsd, adj hozzá értéket!
         </para>
-    
-        <programlisting language="algol">
-                <![CDATA[
-                   
-<utasitás>::=
-         <összetett_utasitás>
-         <kifejezés>; (értékadás pl, num=10)
-         if(<kifejezés>) <utasitás>
-         else if(<kifejezés>) <utasitás>
-         else <utasitás>
-         switch (<kifejezés)
-         <egész_konstans_kifejezés : <utasitás>
-         goto <azonositó>;
-         <azonositó> : <utasitás>
-         break; continue; return<kifejezés>;
-         or(<kifejezés1><kifejezés2><kifejezés3>) <utasitás>
-         while(<kifejezés>) <utasitás>
-         do <utasitás> while<kifejezés>
-         ; (üres utasitás, pl FORTRAN continue-ja)
-
-]]>
-        </programlisting>
-        
-        <para>
-            Példa olyan programra ami a C89-es szabvánnyal nem fordul de C99-cel igen. Ebben a programban
-            cikluson belül deklarálok változót ami a C99-es szabványtól lehetséges. Ha C89-cel próbáljuk 
-            meg forditani akkor a forditó javasolja is a C99 hazsnálatát.
-        </para>
-        
-        <programlisting language="c"><![CDATA[ 
-            int main()
-            {
-                for(int i = 0; i < 20; i++)
-                {
-                    printf("Cikluson beluli deklarálás.");
-                }
-            }
-            ]]>
-        </programlisting>
-        
     </section>                     
 
     <section>
-        <title>3.4 Saját lexikális elemző</title>
+        <title>Saját lexikális elemző</title>
         <para>
             Írj olyan programot, ami számolja a bemenetén megjelenő valós számokat! 
             Nem elfogadható olyan megoldás, amely maga olvassa betűnként a bemenetet, 
             a feladat lényege, hogy lexert használjunk, azaz óriások vállán álljunk és ne kispályázzunk!
         </para>
         <para>
-            A lexer programok szöveg elemző programok amivel szövegeket lehet tetszőleges szempontból elemezni
-            illetve átalakitani. A példaprogram a beirt szövegben valós számokat keres. A program 3 fő részre 
-            bontható (%% az elválasztójel), az első részben meghivjuk a szükséges header fájlokat és deklarálhatunk
-            változókat. A második részben definiáljuk hogy mit is keresünk a szövegben, illetve mit csináljunk vele, 
-            azaz szabályokat alkotunk. Ebben a programban valós számokat keresünk, tehát olyan számokat amelyek tetszőleges 
-            számú számjegyből állhatnak vagy tetszőleges számú számjegyből és 1 db pontból majd újabb tetszőleges számú 
-            számjegyből állnak. A megtalált valós számokat a program a már átalakitott szövegben kiemeli. Minden megtalált 
-            valós szám után növeli a realnumbers nevü változót is, tehát számolja is a megtalált számokat. A program utolsó 
-            része a main függvény ahol meghivhatjuk a lexert és saját utasitásokkal egészithetjük ki a programot.
+            Megoldás videó: <link xlink:href="https://youtu.be/9KnMqrkj_kU">https://youtu.be/9KnMqrkj_kU</link> (15:01-től).
         </para>
         <para>
             Megoldás forrása: <link xlink:href="Chomsky/realnumber.l">
@@ -176,24 +82,18 @@ main ()
 }
 ]]></programlisting>
         <para>
-            Tanulságok, tapasztalatok, magyarázat...
+            Tanulságok, tapasztalatok, magyarázat... ezt kell az olvasónak kidolgoznia, mint labor- vagy otthoni mérési feladatot!
+            Ha mi már megtettük, akkor használd azt, dolgozd fel, javítsd, adj hozzá értéket!
         </para>
     </section>                     
 
     <section>
-        <title>3.5 Leetspeak</title>
+        <title>Leetspeak</title>
         <para>
             Lexelj össze egy l33t ciphert!
         </para>
         <para>
-            Az előző programhoz hasonlóan ez is egy lexer program. Ez úgy müködik, hogy az adott 
-            szövegben ki tujda cserélni a karaktereket egy az eredetihez hasonló karakterre (9-est egy g betüre). 
-            Ezt olyan módon teszi meg hogy az angol abc betüihez illetve 0-9-ig a számokhoz társit 4 kinézetre hasonló 
-            karaktert (ha nincs 4 hasonló akkor pl 2 hasonlót kétszer társitunk hozzá). A program a beolvasást kisbetüsiti 
-            tehát mindegy hogy a bemenetre kis vagy nagy betük érkeznek felismeri az adott karaktert. A kicserélést random 
-            módon teszi, 0 é 100 között sorsol egy random szémot, ha 91-nál kiseb akkor az első társitott karakterre 
-            cseréli a megtaláltat, tehát erre nagyobb esély van mint a többire. A második karakterre 4% esély van, 
-            a harmadikra 3% és a n egyedikre 2%.
+            Megoldás videó: <link xlink:href="https://youtu.be/06C_PqDpD_k">https://youtu.be/06C_PqDpD_k</link>
         </para>
         <para>
             Megoldás forrása: <link xlink:href="Chomsky/l337d1c7.l">
@@ -296,21 +196,33 @@ main()
 }
 ]]></programlisting>
         <para>
-            Tanulságok, tapasztalatok, magyarázat...
+            Tanulságok, tapasztalatok, magyarázat... ezt kell az olvasónak kidolgoznia, mint labor- vagy otthoni mérési feladatot!
+            Ha mi már megtettük, akkor használd azt, dolgozd fel, javítsd, adj hozzá értéket!
         </para>
     </section>                     
 
 
     <section>
-        <title>3.6 A források olvasása</title>
-            
+        <title>A források olvasása</title>
         <para>
-            Vigyázz, sok csipet kerülendő, mert bugokat visz a kódba! Melyek ezek és miért? 
-            Ha nem megy ránézésre, elkapja valamelyiket esetleg a splint vagy a frama?
+            Hogyan olvasod, hogyan értelmezed természetes nyelven az alábbi kódcsipeteket? Például
+            <programlisting><![CDATA[if(signal(SIGINT, jelkezelo)==SIG_IGN)
+    signal(SIGINT, SIG_IGN);]]></programlisting>
+            Ha a SIGINT jel kezelése figyelmen kívül volt hagyva, akkor ezen túl is legyen
+            figyelmen kívül hagyva, ha nem volt figyelmen kívül hagyva, akkor a jelkezelo függvény
+            kezelje. (Miután a <command>man 7 signal</command> lapon megismertem a SIGINT jelet, a
+            <command>man 2 signal</command> lapon pedig a használt rendszerhívást.)
         </para>
-        
+
+        <caution>
+            <title>Bugok</title>
+            <para>
+                Vigyázz, sok csipet kerülendő, mert bugokat visz a kódba! Melyek ezek és miért? 
+                Ha nem megy ránézésre, elkapja valamelyiket esetleg a splint vagy a frama?
+            </para>
+        </caution>
             
-        <orderedlist>
+        <orderedlist numeration="lowerroman">
             <listitem>                                    
                 <programlisting><![CDATA[if(signal(SIGINT, SIG_IGN)!=SIG_IGN)
     signal(SIGINT, jelkezelo);]]></programlisting>
@@ -343,57 +255,20 @@ main()
                 <programlisting><![CDATA[printf("%d %d", f(&a), a);]]></programlisting>            
             </listitem>
         </orderedlist>
+
         <para>
-            <orderedlist>
-                <listitem>
-                    <para>Akkor és csakis akkor kezelje a 'jelkezelo' függvény a SIGINT jelet, ha az nincs ignorálva.</para>
-                </listitem>
-                <listitem>
-                    <para>Egy for ciklus ami a ötször hajtja végre a hozzá rendelt utasitásokat. Preorder módon először az i-t növeli és csak
-                        aztán végzi el az utasitásokat.
-                    </para>
-                </listitem>
-                <listitem>
-                    <para>
-                    Egy for ciklus ami a ötször hajtja végre a hozzá rendelt utasitásokat. Postorder módon először elvégzi az 
-                    utasitásokat és csak azután növeli az i-t.
-                    </para>
-                </listitem>
-                <listitem>
-                    <para>
-                    Egy for ciklus ami a ötször hajtja végre a hozzá rendelt utasitásokat. Viszont a tomb[] első öt értékét 
-                    lecseréli az aktuális i értékre. Tehát 0,1,2,3,4.
-                    </para>
-                </listitem>
-                <listitem>
-                    <para>WIP</para>
-                </listitem>
-                <listitem>
-                    <para>A standard outputra kiiratjuk az f() függvény visszatérési értékét, decimális számban. </para>
-                </listitem>
-                <listitem>
-                    <para>A standard outputra kiiratjuk az f() függvény visszatérési értékét 'a'-ra és magát az 'a'-t is, decimális számban.</para>
-                </listitem>
-                <listitem>
-                    <para>A standard outputra kiiratjuk az f() függvény visszatérési értékét 'a'-ra (mivel annak a memória cimére mutatunk)
-                        és magát az 'a'-t is, decimális számban
-                    </para>
-                </listitem>
-            </orderedlist>  
+            Megoldás videó: BHAX 357. adás.
         </para>
 
         <para>
-            Megoldás videó: 
-        </para>
-
-        <para>
-            Tanulságok, tapasztalatok, magyarázat...
+            Tanulságok, tapasztalatok, magyarázat... ezt kell az olvasónak kidolgoznia, mint labor- vagy otthoni mérési feladatot!
+            Ha mi már megtettük, akkor használd azt, dolgozd fel, javítsd, adj hozzá értéket!
         </para>
 
     </section>                     
 
     <section>
-        <title>3.7 Logikus</title>
+        <title>Logikus</title>
         <para>
             Hogyan olvasod természetes nyelven az alábbi Ar nyelvű formulákat?
         </para>
@@ -406,20 +281,7 @@ $(\exists y \forall x (x \text{ prím}) \supset (x<y)) $
 $(\exists y \forall x (y<x) \supset \neg (x \text{ prím}))$
 ]]></programlisting>        
         <para>
-            <itemizedlist>
-                <listitem>
-                    <para>A primszámok száma végtelen.</para>
-                </listitem>
-                <listitem>
-                    <para>Az ikerprimek száma végtelen.</para>
-                </listitem>
-                <listitem>
-                    <para>A primszámok száma véges.</para>
-                </listitem>
-                <listitem>
-                    <para>A primszámok száma véges. (itt egy az előzővel ekvivalens formula volt)</para>
-                </listitem>
-            </itemizedlist>
+            Megoldás forrása: <link xlink:href="https://gitlab.com/nbatfai/bhax/blob/master/attention_raising/MatLog_LaTeX">https://gitlab.com/nbatfai/bhax/blob/master/attention_raising/MatLog_LaTeX</link>
         </para>
 
         <para>
@@ -432,7 +294,7 @@ $(\exists y \forall x (y<x) \supset \neg (x \text{ prím}))$
     </section>                                                                                                                                                                            
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
     <section>
-        <title>3.8 Deklaráció</title>
+        <title>Deklaráció</title>
             
         <para>
             Vezesd be egy programba (forduljon le) a következőket: 
@@ -469,39 +331,7 @@ $(\exists y \forall x (y<x) \supset \neg (x \text{ prím}))$
             <listitem>
                 <para>függvénymutató egy egészet visszaadó és két egészet kapó függvényre mutató mutatót visszaadó, egészet kapó függvényre</para>                        
             </listitem>            
-        </itemizedlist>
-        
-        <programlisting language="c"><![CDATA[ int main()
-            {
-            
-                //egész
-                int num = 32;
-            
-                //egészre mutató mutató
-                int* toNum = &num;
-            
-                //egészek tömbje
-                int numArray[4] = {0,1,2,3};
-            
-                //egészek tömbjének referenciája
-                int (&numArrayRef)[4] = numArray;
-            
-                //egészre mutató mutatók tömbje
-                int* pointerArray[4];
-            
-                //egészre mutató mutatót visszaadó függvény
-                
-            
-                //egészre mutató mutatót visszaadó függvényre mutató mutató
-                
-            
-                //egészet visszaadó és két egészet kapó függvényre mutató mutatót visszaadó, egészet kapó függvény
-                
-            
-                return 0;
-            
-            }]]>
-        </programlisting>
+        </itemizedlist>            
 
         <para>
             Mit vezetnek be a programba a következő nevek?
@@ -542,49 +372,7 @@ $(\exists y \forall x (y<x) \supset \neg (x \text{ prím}))$
 
 
         <para>
-            Megoldás videó: 
-        </para>
-        <para>
-            <itemizedlist>
-                <listitem>
-                    <para>
-                        <varname>a</varname> mint egész tipusú változó.
-                    </para>
-                     
-                </listitem>
-                <listitem>
-                    <para>
-                        <varname>a</varname> memória cimére mutató mutató.
-                    </para>
-                    
-                </listitem>
-                <listitem>
-                    <para>Egy egészre mutató mutatót <varname>r</varname> névvel, ami az <varname>a</varname> értékét mint mutatócim
-                        tartalmazza.
-                    </para>
-                    
-                </listitem>
-                <listitem>
-                    <para>
-                        Öt elemü tömb, mely egészekből áll.
-                    </para>
-                </listitem>
-                <listitem>
-                    <para>
-                        Egy 5 elemü, egészeket tartalmazó tömbre mutató mutató, mely a <varname>c</varname> tömbre mutat.
-                    </para>
-                </listitem>
-                <listitem>
-                    <para>
-                        Öt elemü egészekre mutató mutatókból álló tömb.
-                    </para>
-                </listitem>
-                <listitem>
-                    <para>
-                        Egésszel visszatérő, paraméter nélküli függvényre mutató mutató.
-                    </para>
-                </listitem>
-            </itemizedlist>  
+            Megoldás videó: BHAX 357. adás.
         </para>
         <para>
             Az utolsó két deklarációs példa demonstrálására két olyan kódot
@@ -683,25 +471,21 @@ main ()
 }
 ]]></programlisting>            
         <para>
-            Tanulságok, tapasztalatok, magyarázat...
+            Tanulságok, tapasztalatok, magyarázat... ezt kell az olvasónak kidolgoznia, mint labor- vagy otthoni mérési feladatot!
+            Ha mi már megtettük, akkor használd azt, dolgozd fel, javítsd, adj hozzá értéket!
         </para>
-    </section>
-    
+    </section>                     
     <section>
-        <title>3.9 MALMÖ | Discrete csiga</title>
+        <title>Vörös Pipacs Pokol/csiga diszkrét mozgási parancsokkal</title>
         <para>
-            A Turing feladatcsokorban hasonló feladattal találkozhattunk de ott diszkrét helyett folytonos mozgást 
-            alkalmaztunk. A két mozgás között jelentős különbségek vannak, mig folytonos mozgásnál a "move 1" parancs
-            mint kapcsoló müködik ami miatt addig mozog amig a "time.sleep()" engedi, addig diszkrét mozgásnál a 
-            "move 1" utasitásként müködik tehát 1 blokknyit mozog előre a "time.sleep()"-ben megadott idő alatt. 
-            Azt hogy csigában haladjon mi úgy oldottuk meg, hogy először az legalsó szinten lévő virágot kibányássza 
-            majd egy szinttel ugorjon fentebb és ezután kezdj el a csigát. A csigához 2 db for ciklust használtunk, a belső 
-            for ciklusban mindig az oldalnyi mozgáshoz elegendő lépésmennyiséget teszi a külső for ciklus pedig azt teszi 
-            lehetővé hogy adott szinten az adott oldalhosszot 4x tegye meg, ennek elején mindig fentebb ugrik egy szintet.
+            Megoldás videó: <link xlink:href="https://youtu.be/Fc33ByQ6mh8">https://youtu.be/Fc33ByQ6mh8</link>      
         </para>
         <para>
-            Megoldás videó: <link xlink:href="https://www.shorturl.at/uBCGT">vidi itt, katt</link>
+            Megoldás forrása: <link xlink:href="https://github.com/nbatfai/RedFlowerHell">https://github.com/nbatfai/RedFlowerHell</link>               
         </para>
-    </section>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             
+        <para>
+            Tanulságok, tapasztalatok, magyarázat... ezt kell az olvasónak kidolgoznia, mint labor- vagy otthoni mérési feladatot!
+            Ha mi már megtettük, akkor használd azt, dolgozd fel, javítsd, adj hozzá értéket!
+        </para>            
+    </section>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
 </chapter>                
